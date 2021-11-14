@@ -1,10 +1,10 @@
 //import "bootstrap/dist/css/bootstrap.min.css";
 import { useEffect, useState } from "react";
 import { Container } from "react-bootstrap";
-import Footer from "./components/Footer";
-import Header from "./components/Header";
-import SeatCell from "./components/SeatCell";
-import SeatTable from "./components/SeatTable";
+import Footer from "./components/Footer.js";
+import Header from "./components/Header.js";
+import SeatCell from "./components/SeatCell.js";
+import SeatTable from "./components/SeatTable.js";
 import tempData from "./tempData.js";
 
 function App() {
