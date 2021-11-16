@@ -1,23 +1,32 @@
 //import "bootstrap/dist/css/bootstrap.min.css";
 import { useEffect, useState } from "react";
-import { Container } from "react-bootstrap";
+import { Container, Col } from "react-bootstrap";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
 import SeatCell from "./components/SeatCell";
 import SeatTable from "./components/SeatTable";
-import tempData from "./tempData.js";
+import tempData from "./tempData";
+import "./ArrayMethod";
 
 function App() {
+    const [colNum, setColNum] = useState(2);
+    const [processedData, setProcessedData] = useState([]);
+
     useEffect(() => {
-        console.log(tempData);
-        return;
+        setColNum(3);
+        setProcessedData(tempData.division(colNum));
     }, []);
+
     return (
         <Container style={{ height: "100%" }}>
             <Header />
             <SeatTable>
-                {tempData.map((duo, index) => (
-                    <SeatCell key={index} duo={duo} />
+                {processedData.map((col) => (
+                    <div>
+                        {col.map((duo, index) => (
+                            <SeatCell key={index} duo={duo} />
+                        ))}
+                    </div>
                 ))}
             </SeatTable>
             <Footer />
