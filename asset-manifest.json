@@ -1,20 +1,20 @@
 {
   "files": {
     "main.css": "/seat-assignment/static/css/main.6db5275d.chunk.css",
-    "main.js": "/seat-assignment/static/js/main.1a627afd.chunk.js",
-    "main.js.map": "/seat-assignment/static/js/main.1a627afd.chunk.js.map",
+    "main.js": "/seat-assignment/static/js/main.087120f7.chunk.js",
+    "main.js.map": "/seat-assignment/static/js/main.087120f7.chunk.js.map",
     "runtime-main.js": "/seat-assignment/static/js/runtime-main.056fccac.js",
     "runtime-main.js.map": "/seat-assignment/static/js/runtime-main.056fccac.js.map",
-    "static/js/2.ba2ce728.chunk.js": "/seat-assignment/static/js/2.ba2ce728.chunk.js",
-    "static/js/2.ba2ce728.chunk.js.map": "/seat-assignment/static/js/2.ba2ce728.chunk.js.map",
+    "static/js/2.8235fb40.chunk.js": "/seat-assignment/static/js/2.8235fb40.chunk.js",
+    "static/js/2.8235fb40.chunk.js.map": "/seat-assignment/static/js/2.8235fb40.chunk.js.map",
     "index.html": "/seat-assignment/index.html",
     "static/css/main.6db5275d.chunk.css.map": "/seat-assignment/static/css/main.6db5275d.chunk.css.map",
-    "static/js/2.ba2ce728.chunk.js.LICENSE.txt": "/seat-assignment/static/js/2.ba2ce728.chunk.js.LICENSE.txt"
+    "static/js/2.8235fb40.chunk.js.LICENSE.txt": "/seat-assignment/static/js/2.8235fb40.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.056fccac.js",
-    "static/js/2.ba2ce728.chunk.js",
+    "static/js/2.8235fb40.chunk.js",
     "static/css/main.6db5275d.chunk.css",
-    "static/js/main.1a627afd.chunk.js"
+    "static/js/main.087120f7.chunk.js"
   ]
 }
