@@ -4,15 +4,18 @@ import Footer from "../components/Footer";
 import Header from "../components/Header";
 import SeatCell from "../components/SeatCell";
 import SeatTable from "../components/SeatTable";
-import tempData from "../tempData";
 import "../ArrayMethod";
 
-function StudentsArr({ columnNumber }) {
+function StudentsArr({ studentsData, columnNumber }) {
     const [processedData, setProcessedData] = useState([]);
 
     useEffect(() => {
-        setProcessedData(tempData.division(columnNumber));
+        setProcessedData(studentsData.division(columnNumber));
     }, []);
+
+    useEffect(() => {
+        console.log(processedData);
+    }, [processedData]);
 
     const clickButton = () => {
         console.log("심인용 바보");
@@ -26,8 +29,8 @@ function StudentsArr({ columnNumber }) {
             <Header />
             <div>
                 <SeatTable>
-                    {processedData.map((col) => (
-                        <div>
+                    {processedData.map((col, index) => (
+                        <div key={index}>
                             {col.map((duo, index) => (
                                 <SeatCell key={index} duo={duo} />
                             ))}
