@@ -1,20 +1,23 @@
 {
   "files": {
-    "main.css": "/seat-assignment/static/css/main.6db5275d.chunk.css",
-    "main.js": "/seat-assignment/static/js/main.087120f7.chunk.js",
-    "main.js.map": "/seat-assignment/static/js/main.087120f7.chunk.js.map",
+    "main.css": "/seat-assignment/static/css/main.f04506bc.chunk.css",
+    "main.js": "/seat-assignment/static/js/main.563a3448.chunk.js",
+    "main.js.map": "/seat-assignment/static/js/main.563a3448.chunk.js.map",
     "runtime-main.js": "/seat-assignment/static/js/runtime-main.056fccac.js",
     "runtime-main.js.map": "/seat-assignment/static/js/runtime-main.056fccac.js.map",
-    "static/js/2.8235fb40.chunk.js": "/seat-assignment/static/js/2.8235fb40.chunk.js",
-    "static/js/2.8235fb40.chunk.js.map": "/seat-assignment/static/js/2.8235fb40.chunk.js.map",
+    "static/css/2.383c0125.chunk.css": "/seat-assignment/static/css/2.383c0125.chunk.css",
+    "static/js/2.462d4eee.chunk.js": "/seat-assignment/static/js/2.462d4eee.chunk.js",
+    "static/js/2.462d4eee.chunk.js.map": "/seat-assignment/static/js/2.462d4eee.chunk.js.map",
     "index.html": "/seat-assignment/index.html",
-    "static/css/main.6db5275d.chunk.css.map": "/seat-assignment/static/css/main.6db5275d.chunk.css.map",
-    "static/js/2.8235fb40.chunk.js.LICENSE.txt": "/seat-assignment/static/js/2.8235fb40.chunk.js.LICENSE.txt"
+    "static/css/2.383c0125.chunk.css.map": "/seat-assignment/static/css/2.383c0125.chunk.css.map",
+    "static/css/main.f04506bc.chunk.css.map": "/seat-assignment/static/css/main.f04506bc.chunk.css.map",
+    "static/js/2.462d4eee.chunk.js.LICENSE.txt": "/seat-assignment/static/js/2.462d4eee.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.056fccac.js",
-    "static/js/2.8235fb40.chunk.js",
-    "static/css/main.6db5275d.chunk.css",
-    "static/js/main.087120f7.chunk.js"
+    "static/css/2.383c0125.chunk.css",
+    "static/js/2.462d4eee.chunk.js",
+    "static/css/main.f04506bc.chunk.css",
+    "static/js/main.563a3448.chunk.js"
   ]
 }
