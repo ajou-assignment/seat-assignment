@@ -1,0 +1,1 @@
+const STUDENT = "/students-data";

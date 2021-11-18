@@ -1,6 +1,6 @@
 //import "bootstrap/dist/css/bootstrap.min.css";
 import { useEffect, useState } from "react";
-import { Container, Col } from "react-bootstrap";
+import { Container } from "react-bootstrap";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
 import SeatCell from "./components/SeatCell";
@@ -11,6 +11,10 @@ import "./ArrayMethod";
 function App() {
     const [colNum, setColNum] = useState(2);
     const [processedData, setProcessedData] = useState([]);
+
+    useEffect(() => {
+        fetch("/students-data");
+    });
 
     useEffect(() => {
         setColNum(3);
