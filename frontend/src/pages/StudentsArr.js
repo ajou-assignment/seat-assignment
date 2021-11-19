@@ -18,7 +18,7 @@ function StudentsArr({ studentsData, columnNumber }) {
     const clickButton = () => {
         console.log("심인용 바보");
         fetch("/students-data").then((res) => {
-            console.log(res);
+            console.log(res.json());
         });
     };
 

@@ -1,4 +1,4 @@
-from django.http import response
+from django.http import response, JsonResponse
 from django.shortcuts import render
 from .serializers import TodoSerializer 
 from rest_framework import viewsets      
@@ -12,6 +12,9 @@ class TodoView(viewsets.ModelViewSet):
     serializer_class = TodoSerializer   
     queryset = Todo.objects.all() 
 
-def test(requset):
-    print(1)
-    return response.HttpResponse("asdfasdfsadfsafklnsadfn")
+def test(request):
+    data = {
+        "name" : "hong seong bin",
+        "age" : 26
+    }
+    return JsonResponse(data)
