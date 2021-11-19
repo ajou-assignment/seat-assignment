@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Button, Form } from "react-bootstrap";
-import Footer from "../components/Footer";
 import "./InputColNum.css";
 
 function InputColNum({ onSubmit }) {
@@ -30,7 +29,7 @@ function InputColNum({ onSubmit }) {
     };
 
     return (
-        <Form>
+        <form>
             <div className="input-wrapper">
                 <div className="box">
                     <div className="box-subject">
@@ -83,8 +82,7 @@ function InputColNum({ onSubmit }) {
                     </div>
                 </div>
             </div>
-            <Footer />
-        </Form>
+        </form>
     );
 }
 

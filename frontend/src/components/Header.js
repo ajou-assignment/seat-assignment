@@ -4,7 +4,7 @@ function Header() {
     return (
         <div
             style={{
-                paddingTop: "10px",
+                paddingTop: "20px",
                 display: "flex",
                 justifyContent: "center",
             }}
@@ -13,6 +13,7 @@ function Header() {
                 style={{
                     width: "60%",
                     border: "3px solid grey",
+                    borderRadius: "5px",
                     display: "flex",
                     justifyContent: "center",
                 }}

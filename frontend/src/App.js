@@ -1,25 +1,43 @@
 import { useState } from "react";
-import StudentsArr from "./pages/StudentsArr";
-import InputColNum from "./pages/InputColNum";
-import tempData from "./tempData";
+import Header from "./components/Header.js";
+import Footer from "./components/Footer.js";
+import StudentsArr from "./pages/StudentsArr.js";
+import InputColNum from "./pages/InputColNum.js";
+import ReturnBtn from "./components/ReturnBtn.js";
+import tempData from "./tempData.js";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
+    const [data, setData] = useState([...tempData]);
     const [colNum, setColNum] = useState(3);
     const [isInputColNum, setIsInputColNum] = useState(false);
 
-    const handleSubmit = (e) => {
-        setColNum(e);
-        setIsInputColNum(true);
+    const handleInputColNumSubmit = async (e) => {
+        await setColNum(e);
+        await setIsInputColNum(true);
+    };
+
+    const handleReturnBtnSubmin = async () => {
+        await setIsInputColNum(false);
     };
 
     return (
         <div>
-            {isInputColNum ? (
-                <StudentsArr studentsData={tempData} columnNumber={colNum} />
-            ) : (
-                <InputColNum onSubmit={handleSubmit} />
-            )}
+            <Header />
+            <div>
+                {isInputColNum ? (
+                    <div>
+                        <StudentsArr
+                            studentsData={[...data]}
+                            columnNumber={colNum}
+                        />
+                        <ReturnBtn onSubmit={handleReturnBtnSubmin} />
+                    </div>
+                ) : (
+                    <InputColNum onSubmit={handleInputColNumSubmit} />
+                )}
+            </div>
+            <Footer />
         </div>
     );
 }
