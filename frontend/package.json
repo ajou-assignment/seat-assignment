@@ -41,5 +41,5 @@
     ]
   },
   "proxy": "http://localhost:8000",
-  "homepage": "https://ajou-assignment.github.io/seat-assignment"
+  "homepage": "."
 }
