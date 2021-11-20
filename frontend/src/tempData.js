@@ -9,19 +9,22 @@ const tempData = [
     },
     {
         left: { id: 5, name: "이경민" },
-        right: { id: 6, name: "채영창" },
+        right: { id: 6, name: "이새결" },
     },
     {
         left: { id: 7, name: "서재은" },
         right: { id: 8, name: "원준연" },
     },
     {
-        left: { id: 9, name: "문재인" },
-        right: { id: 10, name: "이재명" },
+        left: { id: 9, name: "정명언" },
+        right: { id: 10, name: "서경수" },
     },
     {
-        left: { id: 11, name: "홍준표" },
-        right: { id: 12, name: "이준석" },
+        left: { id: 11, name: "구동용" },
+        right: { id: 12, name: "김영찬" },
+    },
+    {
+        left: { id: 11, name: "채영창" },
     },
 ];
 

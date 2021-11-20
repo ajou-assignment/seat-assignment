@@ -87,10 +87,27 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
+    'OPTIONS' : {
+        #'driver' : 'SQL Server Native Client 11.0',
+        #'MARS_Connection' : True,
+        #'driver_supports_utf8' : True,
+    },
+
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+        'NAME': str(os.path.join(BASE_DIR, "db.sqlite3"))
+
+        #'ENGINE': 'sql_server.pyodbc',
+        #'NAME': 'test',
+        #'USER': 'test',
+        #'PASSWORD': 'test',
+        #'HOST': '222.98.34.219',
+        #'PORT': '40000',
+
+        #"OPTIONS": {
+        #    "driver": "ODBC Driver 17 for SQL Server"
+        #}, 
+    },
 }
 
 

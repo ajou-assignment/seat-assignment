@@ -18,24 +18,25 @@ def main():
 
     # React project 실행
     try:
-        if sys.argv[2] == 'react':
-            project_root = os.getcwd()
-            os.chdir(os.path.join(project_root, "frontend"))
-            
-            if len(sys.argv) > 3:
-                if sys.argv[3] == 'start':
-                    os.system("npm start")
-                elif sys.argv[3] == 'build':
-                    os.system("npm run build")
+        if len(sys.argv) > 2:
+            if sys.argv[2] == 'react':
+                project_root = os.getcwd()
+                os.chdir(os.path.join(project_root, "frontend"))
+                
+                if len(sys.argv) > 3:
+                    if sys.argv[3] == 'start':
+                        os.system("npm start")
+                    elif sys.argv[3] == 'build':
+                        os.system("npm run build")
+                    else:
+                        print("wrong npm command, run on develop mode")
+                        os.system("npm start")
+                    sys.argv.pop(3)
                 else:
-                    print("wrong npm command, run on develop mode")
-                    os.system("npm start")
-                sys.argv.pop(3)
-            else:
-                os.system("npm run build")
+                    os.system("npm run build")
 
-            os.chdir(project_root)
-            sys.argv.pop(2)
+                    os.chdir(project_root)
+                    sys.argv.pop(2)
     except IndexError:
         execute_from_command_line(sys.argv)
     else:
