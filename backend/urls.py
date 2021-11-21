@@ -19,13 +19,13 @@ from django.views.generic import TemplateView
 from rest_framework import routers
 from api import views                             
 
-router = routers.DefaultRouter()                   
-router.register(r'todos', views.TodoView, 'todo')  
+#router = routers.DefaultRouter()                   
+#router.register(r'todos', views.TodoView, 'todo')  
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),
-    path('students-data', views.test),
-    path('route/', include(router.urls)),
+    path('students-data', views.AlgoTest),
+    #path('route/', include(router.urls)),
     re_path('', TemplateView.as_view(template_name='index.html')),
 ]

@@ -1,7 +1,7 @@
 from rest_framework import serializers
-from .models import Todo
+from .models import UserSet
 
-class TodoSerializer(serializers.ModelSerializer):
+class TestSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Todo
-        fields = ('id' ,'title', 'description', 'completed')
+        model = UserSet
+        fields = '__all__'
