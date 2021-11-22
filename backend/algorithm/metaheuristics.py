@@ -2,20 +2,20 @@ import numpy as np
 import random
 
 class Search:
-    def __init__(self, values, tabu_length, max_iter):
+    def __init__(self, values):
         self.values = values
-        self.tabu_length = tabu_length
+        self.tabu_length = 10   # Tabu List 길이
         self.tabu_list = []
-        self.max_iter = max_iter
-        self.swap_count = 10    # 최초 Swap 자식 해 수
-        self.shake_count = 10   # 최초 Shake 자식해 수
-        self.improve_check_count = 100  # 횟수동안 개선 없으면 종료
+        self.max_iter = 1000    # 최대 반복 횟수
+        self.swap_count = 20    # 최초 Swap 자식 해 수
+        self.shake_count = 0   # 최초 Shake 자식해 수
+        self.improve_check_count = 50  # 횟수동안 개선 없으면 종료
         self.total_count = self.swap_count + self.shake_count
     
     # 전체 합계 계산
     def _fitness(self, solution):
         sum = 0
-        for i in range(0, 10, 2):
+        for i in range(0, len(values), 2):
             sum += self.values[solution[i], solution[i + 1]]
             sum += self.values[solution[i + 1], solution[i]]
         return sum
@@ -93,9 +93,13 @@ class Search:
 
         solution = ""
         fitness_list = []
+        
         for candidate in candidate_list:
             value = self._fitness(candidate)
             fitness_list.append(value)
+            
+        current_solution = candidate_list[0]
+        current_value = fitness_list[0]
 
         # Remove candidate
         list_del = []
@@ -111,6 +115,10 @@ class Search:
             del candidate_list[i]
             del tabu_list[i]
             del fitness_list[i]
+
+        # 전부 Tabu로 삭제된 경우
+        if len(candidate_list) == 0:    
+            return current_solution, current_value, solution
 
         # Evalute each candidate
         current_solution = candidate_list[0]
@@ -177,27 +185,58 @@ class Search:
                 if (solution == "swap") & (self.swap_count < self.total_count):
                     self.swap_count += 1
                     self.shake_count -= 1
-                    print(f"{count_loop} : {self.swap_count} / {self.shake_count}")
+                    # print(f"{count_loop} : {self.swap_count} / {self.shake_count}")
                 if (solution == "shake") & (self.swap_count > 5):
                     self.swap_count -= 1
                     self.shake_count += 1
-                    print(f"{count_loop} : {self.swap_count} / {self.shake_count}")
+                    # print(f"{count_loop} : {self.swap_count} / {self.shake_count}")
             
             count_loop += 1
 
             if count_same_value == self.improve_check_count:
                 break
         
-        print(f"{count_loop} :  {best_value} / {best_solution}")
-        return best_value
+        # print(f"{count_loop} :  {best_value} / {best_solution}")
+        # for i in range(0,len(best_solution), 2):
+        #     print('[' + studends[best_solution[i]] + ', ' + studends[best_solution[i + 1]] + ']', end=' ')
 
-# values = np.random.randint(0, 100, size=(40, 40))
-# for i in range(0,40):
+        # print(self.getSeatData(best_solution))
+        print(f"init : {initial_value}")
+        print(f"{count_loop} :  {best_value}")
+
+        return best_solution
+
+    # def getStudentData(self):
+
+    #     return 1
+
+
+def getSeatData():
+    search = Search(values)
+    best_solution = search.solve()
+    listSeatDataAll = []
+    for i in range(0,len(best_solution), 2):
+        listSeatData = {
+        "student1":{
+            "id":best_solution[i] + 1, 
+            "name":studends[best_solution[i]], 
+            "rating":values[best_solution[i]][best_solution[i + 1]]},
+        "student2":{
+            "id":best_solution[i + 1] + 1, 
+            "name":studends[best_solution[i + 1]], 
+            "rating":values[best_solution[i + 1]][best_solution[i]]}
+        }
+        listSeatDataAll.append(listSeatData)
+    return listSeatDataAll
+
+
+# values = np.random.randint(0, 100, size=(24, 24))
+# for i in range(0,24):
 #     values[i,i] = 0
 # print('[', end='')
-# for i in range(0,40):
+# for i in range(0,24):
 #     print('[', end='')
-#     for j in range(0,40):
+#     for j in range(0,24):
 #         print(values[i,j], end=',')
 #     print('],')
 # print(']', end='')
@@ -241,24 +280,53 @@ class Search:
 # [93,79,20,0,42,2,71,77,43,72,6,60,90,89,0,42,5,91,43,20,28,78,70,84,63,26,72,60,80,79,20,1,90,5,40,74,0,34,91,47,],
 # [69,6,88,1,11,68,28,3,50,13,15,15,64,85,24,56,76,31,27,38,55,70,7,7,19,34,69,35,44,83,13,19,99,40,24,45,25,0,23,26,],
 # [5,86,71,9,62,6,21,32,34,6,40,48,93,29,98,3,13,96,57,70,89,24,45,77,66,22,75,63,52,91,42,73,91,49,15,88,0,51,0,29,],
-# [61,13,91,80,6,34,12,3,53,65,86,79,6,83,32,34,94,34,25,9,77,8,29,22,85,37,78,61,63,21,30,6,6,7,56,7,25,64,51,0,]])
+# [61,13,91,80,6,34,12,3,53,65,86,79,6,83,32,34,94,34,25,9,77,8,29,22,85,37,78,61,63,21,30,6,6,7,56,7,25,64,51,-np.inf,]])
 
-values = np.array([[-np.inf, 73, 20, 27, 94,  7,  7, 51, 92, 21],
-        [28, -np.inf, 57, 31, 80, 69, 11, 10, 28, 39],
-        [45, 58, -np.inf, 31, 70, 74, 47, 40, 77, 11],
-        [13, 60,  2, -np.inf, 13, 74, 64, 96, 53, 10],
-        [50, 38, 49, 87, -np.inf, 78, 30, 36, 86, 56],
-        [94, 34, 15, 87, 97, -np.inf, 98, 89, 20, 17],
-        [64, 45, 89, 63, 85, 42, -np.inf,  7, 12, 79],
-        [74, 21, 87, 76, 26, 87, 34, -np.inf, 15, 44],
-        [48, 41, 81,  7, 50, 24,  7,  7, -np.inf, 96],
-        [15, 73, 60, 82, 79, 18, 54,  3, 54, -np.inf]])
+studends = np.array(['심인용', '이경민', '홍성빈', '정재민', '정보경', '서재은', '구동용', '강지혜', '노유정', '박봄', '박수정', '박윤우', '박주현', '배기운',
+                     '서경수', '서동찬', '성원기', '원준연', '이창훈', '정명언', '박찬우', '장동찬', '김민주', '김영찬'])
+
+values = np.array([
+[-np.inf,48,74,7,93,40,78,81,27,49,75,73,38,35,80,21,24,31,11,65,89,44,60,83,],
+[52,-np.inf,70,76,48,80,25,92,13,21,31,43,81,28,32,17,39,82,18,84,64,17,95,53,],
+[46,45,-np.inf,67,66,57,40,63,40,1,53,36,38,58,78,11,76,89,33,30,3,38,52,29,],
+[39,39,57,-np.inf,85,40,87,84,70,16,16,14,21,97,59,96,99,29,47,36,83,31,27,68,],
+[46,23,37,73,-np.inf,48,5,65,34,55,5,38,69,12,48,76,56,90,80,80,20,12,21,62,],
+[7,89,52,79,24,-np.inf,73,95,64,45,24,51,53,1,69,56,14,51,79,37,88,81,90,37,],
+[20,71,53,72,70,24,-np.inf,2,26,76,28,75,40,37,54,98,51,25,17,92,90,10,29,22,],
+[4,24,96,93,32,3,39,-np.inf,68,46,35,94,48,85,23,49,15,35,21,55,18,5,11,65,],
+[1,1,80,11,44,13,86,90,-np.inf,59,5,99,83,53,99,3,72,77,27,52,19,29,84,4,],
+[72,85,51,12,88,15,51,25,9,-np.inf,4,55,63,86,88,73,26,11,53,90,44,47,48,75,],
+[53,36,75,63,41,21,75,78,77,79,-np.inf,15,13,87,52,0,93,99,59,76,54,44,0,59,],
+[31,25,70,70,67,33,4,61,91,24,54,-np.inf,8,0,29,85,6,76,47,41,52,85,65,17,],
+[92,88,86,10,82,36,83,95,38,94,29,55,-np.inf,92,99,87,67,57,20,13,68,44,74,41,],
+[4,99,5,83,18,51,58,86,72,77,15,34,32,-np.inf,76,61,92,38,97,93,88,58,58,40,],
+[64,37,3,51,50,52,81,80,36,47,54,97,78,85,-np.inf,7,18,25,75,11,74,40,13,84,],
+[92,80,11,87,35,36,95,33,47,53,47,73,74,54,20,-np.inf,35,87,9,77,46,8,15,20,],
+[22,14,22,25,62,65,1,29,58,79,11,80,83,9,97,65,-np.inf,58,81,0,78,42,57,77,],
+[36,0,17,70,68,99,54,84,11,71,78,41,39,38,94,14,88,-np.inf,38,75,19,93,95,43,],
+[18,57,76,2,16,39,55,8,48,82,79,45,33,31,20,31,5,66,-np.inf,88,23,30,67,80,],
+[50,71,35,77,85,93,12,98,22,77,10,24,91,18,38,27,48,94,68,-np.inf,30,14,89,65,],
+[93,56,41,11,33,33,12,12,12,79,33,46,82,61,58,44,88,57,96,59,-np.inf,27,57,65,],
+[50,57,18,35,72,84,53,79,16,99,98,70,89,27,50,96,21,27,16,24,59,-np.inf,1,4,],
+[90,30,1,89,44,62,77,41,64,76,28,19,16,69,39,52,31,91,58,37,32,68,-np.inf,78,],
+[68,43,89,63,91,49,63,3,24,25,85,85,56,18,63,81,19,48,71,53,94,59,10,-np.inf,],
+])
+
+# values = np.array([[-np.inf, 73, 20, 27, 94,  7,  7, 51, 92, 21],
+#         [28, -np.inf, 57, 31, 80, 69, 11, 10, 28, 39],
+#         [45, 58, -np.inf, 31, 70, 74, 47, 40, 77, 11],
+#         [13, 60,  2, -np.inf, 13, 74, 64, 96, 53, 10],
+#         [50, 38, 49, 87, -np.inf, 78, 30, 36, 86, 56],
+#         [94, 34, 15, 87, 97, -np.inf, 98, 89, 20, 17],
+#         [64, 45, 89, 63, 85, 42, -np.inf,  7, 12, 79],
+#         [74, 21, 87, 76, 26, 87, 34, -np.inf, 15, 44],
+#         [48, 41, 81,  7, 50, 24,  7,  7, -np.inf, 96],
+#         [15, 73, 60, 82, 79, 18, 54,  3, 54, -np.inf]])
 
 import time
 start = time.time()  # 시작 시간 저장
 # for i in range(0,10):
 #     search = Search(values, 10, 1000)
 #     search.solve()
-search = Search(values, 10, 1000)
-search.solve()
+print(getSeatData())
 print("time :", time.time() - start)  # 현재시각 - 시작시간 = 실행 시간
