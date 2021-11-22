@@ -94,19 +94,19 @@ DATABASES = {
     },
 
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': str(os.path.join(BASE_DIR, "db.sqlite3"))
+        #'ENGINE': 'django.db.backends.sqlite3',
+        #'NAME': str(os.path.join(BASE_DIR, "db.sqlite3"))
 
-        #'ENGINE': 'sql_server.pyodbc',
-        #'NAME': 'test',
-        #'USER': 'test',
-        #'PASSWORD': 'test',
-        #'HOST': '222.98.34.219',
-        #'PORT': '40000',
+        'ENGINE': 'sql_server.pyodbc',
+        'NAME': 'test',
+        'USER': 'test',
+        'PASSWORD': 'test',
+        'HOST': '222.98.34.219',
+        'PORT': '40000',
 
-        #"OPTIONS": {
-        #    "driver": "ODBC Driver 17 for SQL Server"
-        #}, 
+        "OPTIONS": {
+            "driver": "ODBC Driver 17 for SQL Server"
+        }, 
     },
 }
 

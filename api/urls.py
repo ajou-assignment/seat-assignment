@@ -3,5 +3,5 @@ from django.views.generic import TemplateView
 from . import views
 
 urlpatterns = [
-    path('students-data', views.test)
+    #path('students-data', views.AlgoTest)
 ]
