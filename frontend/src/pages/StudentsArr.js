@@ -33,9 +33,6 @@ function StudentsArr({ studentsData, columnNumber }) {
                     </div>
                 ))}
             </SeatTable>
-            <div>
-                <Button onClick={clickButton}>Click me</Button>
-            </div>
         </div>
     );
 }

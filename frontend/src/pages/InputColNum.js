@@ -28,8 +28,42 @@ function InputColNum({ onSubmit }) {
         await setNumber(MIN_NUMBER);
     };
 
+    const tempSubmit = (e) => {
+        e.preventDefault();
+        onSubmit(4);
+    };
+
     return (
         <form>
+            <div style={{ display: "table", width: "100%" }}>
+                <div
+                    style={{
+                        display: "table-cell",
+                        verticalAlign: "middle",
+                        height: "400px",
+                    }}
+                >
+                    <div style={{ display: "flex", justifyContent: "center" }}>
+                        <div>
+                            <Button
+                                style={{ width: "150px" }}
+                                variant="success"
+                                type="submit"
+                                onClick={tempSubmit}
+                            >
+                                Start
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    );
+}
+
+export default InputColNum;
+/*
+<form>
             <div className="input-wrapper">
                 <div className="box">
                     <div className="box-subject">
@@ -83,7 +117,4 @@ function InputColNum({ onSubmit }) {
                 </div>
             </div>
         </form>
-    );
-}
-
-export default InputColNum;
+*/
