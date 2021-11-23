@@ -25,7 +25,7 @@ from api import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),
-    path('students-data', views.AlgoTest),
+    path('students-data', views.GetTest),
     #path('route/', include(router.urls)),
     re_path('', TemplateView.as_view(template_name='index.html')),
 ]
