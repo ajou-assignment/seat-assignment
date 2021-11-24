@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Button } from "react-bootstrap";
 import SeatCell from "../components/SeatCell";
 import SeatTable from "../components/SeatTable";
 import "../ArrayMethod";
@@ -10,17 +9,6 @@ function StudentsArr({ studentsData, columnNumber }) {
     useEffect(() => {
         setProcessedData(studentsData.division(columnNumber));
     }, []);
-
-    useEffect(() => {
-        console.log(processedData);
-    }, [processedData]);
-
-    const clickButton = () => {
-        console.log("심인용 바보");
-        fetch("/students-data").then((res) => {
-            console.log(res.json());
-        });
-    };
 
     return (
         <div>

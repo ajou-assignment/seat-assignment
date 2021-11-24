@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { Button, Form } from "react-bootstrap";
+import { Button, Form, Spinner } from "react-bootstrap";
 import "./InputColNum.css";
 
-function InputColNum({ onSubmit }) {
+function InputColNum({ onSubmit, loading }) {
     const MAX_NUMBER = 5;
     const MIN_NUMBER = 1;
     const [number, setNumber] = useState(MIN_NUMBER);
-
+    /*
     const clickUpButton = async () => {
         if (number < MAX_NUMBER) {
             await setNumber(number + 1);
@@ -27,7 +27,7 @@ function InputColNum({ onSubmit }) {
     const handleReset = async () => {
         await setNumber(MIN_NUMBER);
     };
-
+*/
     const tempSubmit = (e) => {
         e.preventDefault();
         onSubmit(4);
@@ -45,14 +45,18 @@ function InputColNum({ onSubmit }) {
                 >
                     <div style={{ display: "flex", justifyContent: "center" }}>
                         <div>
-                            <Button
-                                style={{ width: "150px" }}
-                                variant="success"
-                                type="submit"
-                                onClick={tempSubmit}
-                            >
-                                Start
-                            </Button>
+                            {loading ? (
+                                <Spinner animation="grow" variant="dark" />
+                            ) : (
+                                <Button
+                                    style={{ width: "150px" }}
+                                    variant="success"
+                                    type="submit"
+                                    onClick={tempSubmit}
+                                >
+                                    Start
+                                </Button>
+                            )}
                         </div>
                     </div>
                 </div>

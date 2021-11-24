@@ -1,4 +1,4 @@
-const tempData = [
+const dummyData = [
     {
         left: { id: 1, name: "홍성빈" },
         right: { id: 2, name: "정보경" },
@@ -28,4 +28,4 @@ const tempData = [
     },
 ];
 
-export default tempData;
+export default dummyData;
