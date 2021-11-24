@@ -71,7 +71,7 @@ def AlgoTest():
     data = mh.getSeatData()
 
     # ouput of seats for students by Tabu Search (Shake)
-    # return JsonResponse(data, safe=False)
-    return data
+    return JsonResponse(data, safe=False)
+    #return data
 
-print(AlgoTest())
+#print(AlgoTest())
