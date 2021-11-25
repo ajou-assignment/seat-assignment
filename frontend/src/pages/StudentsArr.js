@@ -7,6 +7,7 @@ function StudentsArr({ studentsData, columnNumber }) {
     const [processedData, setProcessedData] = useState([]);
 
     useEffect(() => {
+        console.log(studentsData.length);
         setProcessedData(studentsData.division(columnNumber));
     }, []);
 

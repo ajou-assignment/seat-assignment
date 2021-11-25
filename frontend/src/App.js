@@ -18,7 +18,7 @@ function App() {
             if (res.status === 500) {
                 return dummyData;
             }
-            return res;
+            return res.json();
         });
 
         return response;
