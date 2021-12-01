@@ -1,14 +1,19 @@
 import { useEffect, useState } from "react";
 import SeatCell from "../components/SeatCell";
 import SeatTable from "../components/SeatTable";
-import "../ArrayMethod";
+import {division} from "../ArrayMethod"
 
-function StudentsArr({ studentsData, columnNumber }) {
-    const [processedData, setProcessedData] = useState([]);
+type StudentsArrProps = {
+    studentsData:Array<object>;
+    columnNumber:number
+}
+
+function StudentsArr({ studentsData, columnNumber }:StudentsArrProps) {
+    const [processedData, setProcessedData] = useState<Array<Array<object>>>([]);
 
     useEffect(() => {
         console.log(studentsData.length);
-        setProcessedData(studentsData.division(columnNumber));
+        setProcessedData(division([...studentsData], columnNumber));
     }, []);
 
     return (

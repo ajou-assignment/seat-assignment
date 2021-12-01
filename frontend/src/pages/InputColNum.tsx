@@ -1,11 +1,17 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Button, Form, Spinner } from "react-bootstrap";
 import "./InputColNum.css";
 
-function InputColNum({ onSubmit, loading }) {
+
+type InputColNumProps = {
+    onSubmit: (col:number) => void;
+    loading: boolean;
+}
+
+function InputColNum({ onSubmit, loading }:InputColNumProps) {
     const MAX_NUMBER = 5;
     const MIN_NUMBER = 1;
-    const [number, setNumber] = useState(MIN_NUMBER);
+    const [number, setNumber] = useState<number>(MIN_NUMBER);
     /*
     const clickUpButton = async () => {
         if (number < MAX_NUMBER) {
@@ -28,7 +34,7 @@ function InputColNum({ onSubmit, loading }) {
         await setNumber(MIN_NUMBER);
     };
 */
-    const tempSubmit = (e) => {
+    const tempSubmit = (e:React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         onSubmit(4);
     };

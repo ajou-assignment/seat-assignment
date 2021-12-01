@@ -1,14 +1,13 @@
-Array.prototype.division = function (denominator) {
-    let arr = this;
-    let len = arr.length;
+export const division = (targetArray:Array<any>, denominator:number):Array<any> => {
+    let len = targetArray.length;
     let result = [];
 
     for (let i = 0; i < denominator; i++) {
-        result.push(arr.splice(0, len / denominator));
+        result.push(targetArray.splice(0, len / denominator));
     }
-    if (arr) {
-        for (let i = 0; i < arr.length; i++) {
-            result[i].push(arr[i]);
+    if (targetArray) {
+        for (let i = 0; i < targetArray.length; i++) {
+            result[i].push(targetArray[i]);
         }
     }
 

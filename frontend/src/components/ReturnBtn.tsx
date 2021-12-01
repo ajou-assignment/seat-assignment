@@ -1,7 +1,13 @@
 import { Button } from "react-bootstrap";
 
-function ReturnBtn({ onSubmit }) {
-    const handleSubmit = async (e) => {
+
+
+type ReturnBtnProps = {
+    onSubmit: (toggle:boolean)=> void;
+}
+
+function ReturnBtn ( {onSubmit}:ReturnBtnProps ) {
+    const handleSubmit = async (e:React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         await onSubmit(false);
     };

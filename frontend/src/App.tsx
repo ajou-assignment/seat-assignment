@@ -1,19 +1,19 @@
 import { useState } from "react";
-import Header from "./components/Header.js";
-import Footer from "./components/Footer.js";
-import StudentsArr from "./pages/StudentsArr.js";
-import InputColNum from "./pages/InputColNum.js";
-import ReturnBtn from "./components/ReturnBtn.js";
-import dummyData from "./dummyData.js";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
+import StudentsArr from "./pages/StudentsArr";
+import InputColNum from "./pages/InputColNum";
+import ReturnBtn from "./components/ReturnBtn";
+import dummyData from "./dummyData";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
-    const [colNum, setColNum] = useState(3);
-    const [studentsData, setStudentsData] = useState([]);
-    const [isInputColNum, setIsInputColNum] = useState(false);
-    const [isFetching, setIsFetching] = useState(false);
+    const [colNum, setColNum] = useState<number>(3);
+    const [studentsData, setStudentsData] = useState<Array<Array<object>>>([]);
+    const [isInputColNum, setIsInputColNum] = useState<boolean>(false);
+    const [isFetching, setIsFetching] = useState<boolean>(false);
 
-    const getDatafromServer = async (route) => {
+    const getDatafromServer = async (route:string) => {
         const response = await fetch(route).then((res) => {
             if (res.status === 500) {
                 return dummyData;
@@ -24,7 +24,7 @@ function App() {
         return response;
     };
 
-    const handleInputColNumSubmit = async (e) => {
+    const handleInputColNumSubmit = async (e:number) => {
         await setIsFetching(true);
 
         const response = await getDatafromServer("/students-data");

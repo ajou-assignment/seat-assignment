@@ -1,6 +1,19 @@
 import "./SeatCell.css";
 
-function Desks({ leftPerson, rightPerson }) {
+type DesksProps = {
+    leftPerson  : {
+        id: number;
+        name: string;
+        rating: number
+    };
+    rightPerson : {
+        id: number;
+        name: string;
+        rating: number
+    }
+}
+
+function Desks({ leftPerson, rightPerson }:DesksProps) {
     return (
         <div className="desks">
             <div className="desk__left">
@@ -25,7 +38,7 @@ function Desks({ leftPerson, rightPerson }) {
     );
 }
 
-function SeatCell({ duo }) {
+function SeatCell({ duo }:any) {
     const { student1 } = duo;
     let student2 = {
         id: student1.id + 1,
