@@ -1,4 +1,4 @@
-const dummyData = [
+const dummyData:Array<object> = [
     {
         student1: { id: 1, name: "홍성빈", rating: 11 },
         student2: { id: 2, name: "정보경", rating: 12 },
