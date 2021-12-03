@@ -3,9 +3,10 @@ import SeatCell from "../components/SeatCell";
 import SeatTable from "../components/SeatTable";
 import {division} from "../ArrayMethod"
 
+
 type StudentsArrProps = {
-    studentsData:Array<object>;
-    columnNumber:number
+    studentsData :Array<object>;
+    columnNumber :number
 }
 
 function StudentsArr({ studentsData, columnNumber }:StudentsArrProps) {
