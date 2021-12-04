@@ -1,23 +1,16 @@
-import React, { useState } from "react";
-import StudentsArr from "./StudentsArr";
-import InputColNum from "./InputColNum";
+import { useState } from "react";
+import { Spinner } from "react-bootstrap";
+import StudentsArr from "../components/StudentsArr";
+import InputColNum from "../components/InputColNum";
 import ReturnBtn from "../components/ReturnBtn";
 import dummyData from "../dummyData";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-interface HomeProps {
-    match:any;
-    location:any;
-    history:any;
-}
-
-function Home(props:HomeProps) {
-
-    console.log(props.match)
+function Home() {
     const [colNum, setColNum] = useState<number>(3);
     const [studentsData, setStudentsData] = useState<Array<Array<object>>>([]);
     const [isInputColNum, setIsInputColNum] = useState<boolean>(false);
-    const [isFetching, setIsFetching] = useState<boolean>(false);
+    const [isFetching, setIsFetching] = useState<boolean>(true);
 
     const getDatafromServer = async (route:string) => {
         const response = await fetch(route).then((res) => {
@@ -31,36 +24,42 @@ function Home(props:HomeProps) {
     };
 
     const handleInputColNumSubmit = async (e:number) => {
-        setIsFetching(true);
+        setIsInputColNum(true);
 
         const response = await getDatafromServer("/students-data");
 
         setStudentsData(response);
         setColNum(e);
-        setIsInputColNum(true);
+        setIsFetching(false);
     };
 
     const handleReturnBtnSubmit = () => {
         setIsFetching(false);
         setIsInputColNum(false);
     };
-
+//<Spinner animation="grow" variant="dark" />
     return (
         <div>
-                {isInputColNum ? (
-                    <div>
-                        <StudentsArr
-                            studentsData={[...studentsData]}
-                            columnNumber={colNum}
-                        />
-                        <ReturnBtn onSubmit={handleReturnBtnSubmit} />
-                    </div>
-                ) : (
-                    <InputColNum
-                        onSubmit={handleInputColNumSubmit}
-                        loading={isFetching}
-                    />
-                )}
+            {isInputColNum ? (
+                <div>
+                    {
+                        isFetching ? 
+                        ( <Spinner animation="grow" variant="dark" />
+                        ) : (
+                        <div>
+                            <StudentsArr
+                                studentsData={[...studentsData]}
+                                columnNumber={colNum}
+                            />
+                            <ReturnBtn onSubmit={handleReturnBtnSubmit} />
+                        </div>)
+                    }
+                </div>
+            ) : (
+                <InputColNum
+                    onSubmit={handleInputColNumSubmit}
+                />
+            )}
         </div>
     );
 }

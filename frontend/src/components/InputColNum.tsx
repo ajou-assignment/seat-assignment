@@ -1,18 +1,17 @@
 import React, { useState } from "react";
-import { Button, Form, Spinner } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import "./InputColNum.css";
 
 
 type InputColNumProps = {
     onSubmit: (col:number) => void;
-    loading: boolean;
 }
 
-function InputColNum({ onSubmit, loading }:InputColNumProps) {
+function InputColNum({ onSubmit }:InputColNumProps) {
     const MAX_NUMBER = 5;
     const MIN_NUMBER = 1;
     const [number, setNumber] = useState<number>(MIN_NUMBER);
-    /*
+
     const clickUpButton = async () => {
         if (number < MAX_NUMBER) {
             await setNumber(number + 1);
@@ -25,7 +24,7 @@ function InputColNum({ onSubmit, loading }:InputColNumProps) {
         }
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = (e:React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         onSubmit(number);
     };
@@ -33,47 +32,9 @@ function InputColNum({ onSubmit, loading }:InputColNumProps) {
     const handleReset = async () => {
         await setNumber(MIN_NUMBER);
     };
-*/
-    const tempSubmit = (e:React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
-        onSubmit(4);
-    };
 
     return (
         <form>
-            <div style={{ display: "table", width: "100%" }}>
-                <div
-                    style={{
-                        display: "table-cell",
-                        verticalAlign: "middle",
-                        height: "400px",
-                    }}
-                >
-                    <div style={{ display: "flex", justifyContent: "center" }}>
-                        <div>
-                            {loading ? (
-                                <Spinner animation="grow" variant="dark" />
-                            ) : (
-                                <Button
-                                    style={{ width: "150px" }}
-                                    variant="success"
-                                    type="submit"
-                                    onClick={tempSubmit}
-                                >
-                                    Start
-                                </Button>
-                            )}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </form>
-    );
-}
-
-export default InputColNum;
-/*
-<form>
             <div className="input-wrapper">
                 <div className="box">
                     <div className="box-subject">
@@ -127,4 +88,10 @@ export default InputColNum;
                 </div>
             </div>
         </form>
-*/
+        
+    );
+}
+
+export default InputColNum;
+
+
