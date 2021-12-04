@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import SeatCell from "../components/SeatCell";
-import SeatTable from "../components/SeatTable";
-import {division} from "../ArrayMethod"
+import SeatCell from "./SeatCell";
+import SeatTable from "./SeatTable";
+import {division} from "../method/ArrayMethod"
+
 
 type StudentsArrProps = {
-    studentsData:Array<object>;
-    columnNumber:number
+    studentsData :Array<object>;
+    columnNumber :number
 }
 
 function StudentsArr({ studentsData, columnNumber }:StudentsArrProps) {

@@ -1,4 +1,4 @@
-import "./SeatCell.css";
+import "./style/SeatCell.css";
 
 type DesksProps = {
     leftPerson  : {

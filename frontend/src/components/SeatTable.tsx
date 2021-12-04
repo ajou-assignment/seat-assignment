@@ -1,4 +1,8 @@
-function SeatTable({ children }) {
+type SeatTableProps = {
+    children: React.ReactNode
+}
+
+function SeatTable({ children }:SeatTableProps) {
     return (
         <div
             style={{
