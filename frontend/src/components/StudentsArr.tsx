@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import SeatCell from "../components/SeatCell";
-import SeatTable from "../components/SeatTable";
+import SeatCell from "./SeatCell";
+import SeatTable from "./SeatTable";
 import {division} from "../method/ArrayMethod"
 
 

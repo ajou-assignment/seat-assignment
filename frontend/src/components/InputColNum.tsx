@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button } from "react-bootstrap";
-import "./InputColNum.css";
+import "./style/InputColNum.css";
 
 
 type InputColNumProps = {
@@ -38,7 +38,7 @@ function InputColNum({ onSubmit }:InputColNumProps) {
             <div className="input-wrapper">
                 <div className="box">
                     <div className="box-subject">
-                        <h2>Input Column Number</h2>
+                        <h3>How many lines do you want?</h3>
                     </div>
                     <div className="box-main">
                         <div className="box-main__input-wrapper">
