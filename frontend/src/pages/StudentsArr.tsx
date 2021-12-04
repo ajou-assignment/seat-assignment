@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import SeatCell from "../components/SeatCell";
 import SeatTable from "../components/SeatTable";
-import {division} from "../ArrayMethod"
+import {division} from "../method/ArrayMethod"
 
 
 type StudentsArrProps = {
