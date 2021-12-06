@@ -328,5 +328,5 @@ start = time.time()  # 시작 시간 저장
 # for i in range(0,10):
 #     search = Search(values, 10, 1000)
 #     search.solve()
-print(getSeatData())
-print("time :", time.time() - start)  # 현재시각 - 시작시간 = 실행 시간
+#print(getSeatData())
+#print("time :", time.time() - start)  # 현재시각 - 시작시간 = 실행 시간

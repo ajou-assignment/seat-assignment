@@ -2,14 +2,17 @@ from json import encoder
 from django.db.models.query import QuerySet
 from django.core.serializers.json import DjangoJSONEncoder
 from django.http import response, JsonResponse
+from django.http.request import split_domain_port
 from django.shortcuts import render
 from rest_framework.serializers import Serializer
 import numpy as np
-import backend
-from .serializers import TestSerializer 
+import re
+from .serializers import mySerializer 
 from rest_framework import viewsets      
-from .models import UserSet
+from .models import *
 import backend.algorithm.metaheuristics as mh
+import string
+import datetime
 
 class MyJSONEncoder(DjangoJSONEncoder):
     def default(self, o):
@@ -17,19 +20,25 @@ class MyJSONEncoder(DjangoJSONEncoder):
             return tuple(o)
         elif isinstance(o, UserSet):
             return {"id":o.id, "name":o.name, "satisfaction":o.satisfaction }
+        elif isinstance(o, np.integer):
+            return int(o)
+        elif isinstance(o, np.floating):
+            return float(o)
+        elif isinstance(o, np.ndarray):
+            return o.tolist(o)
         
         return super().default(o)
 
 
 def postTest(request):
-    serializer_class = TestSerializer(data=request.POST)
+    serializer_class = mySerializer(data=request.POST)
     data = {
         "name" : "Jeong Bo Kyeong",
         "satisfaction" : 26
     }
 
     # post data form Frontend
-    serializer = TestSerializer(data=data)
+    serializer = mySerializer(data=data)
     if serializer.is_valid():
         serializer.save()
         return JsonResponse(data)
@@ -67,11 +76,81 @@ def GetTest(request):
     return JsonResponse(data, safe=False)
 
 
-def AlgoTest():
+def AlgoTest(request):
     data = mh.getSeatData()
 
+    encoder = MyJSONEncoder
+    safe = False
+    json_dumps_params = {"ensure_ascii": False}
+    kwargs = {}
+
+    print("Asdfasfsaf")
+    print(data)
+
+    r = JsonResponse(data, encoder, safe, json_dumps_params, **kwargs)
+    r.content.decode("utf8")
+
     # ouput of seats for students by Tabu Search (Shake)
-    return JsonResponse(data, safe=False)
+    #return JsonResponse(data, safe=False)
     #return data
+    return r
 
 #print(AlgoTest())
+
+'''
+    -- 만족도 기준정보 테이블 조회
+    Select * from [TB_SATSFACTION_POINT]
+
+    -- 학생 정보 테이블 조회
+    Select * from [TB_STUDENT_INFO]
+
+    -- 최근 10회 히스토리 추출
+    Select TOP(400) * from [TB_HIST_MATCH] Order by [INSERT_TIME] desc 
+
+    -- 최근 매칭 이력 추가 40번 반복 예정 (1, 2에 실데이터 들어감)
+    Insert Into [TB_HIST_MATCH] Values(1, 2, getdate())
+'''
+
+def dbSelect(str: string):
+    result = ''
+
+    # -- 만족도 기준정보 테이블 조회
+    # Select * from [TB_SATSFACTION_POINT]
+    if(str == "Select * from [TB_SATSFACTION_POINT]"):
+        result = Satisfaction_Point.objects.all()
+    # -- 학생 정보 테이블 조회
+    # Select * from [TB_STUDENT_INFO]
+    elif(str == "Select * from [TB_STUDENT_INFO]"):
+        result = Student_Info.objects.all()
+    # -- 최근 10회 히스토리 추출
+    # Select TOP(400) * from [TB_HIST_MATCH] Order by [INSERT_TIME] desc 
+    # https://oneone-note.tistory.com/36
+    elif(str == "Select TOP(400) * from [TB_HIST_MATCH] Order by [INSERT_TIME] desc"):
+        str2 = re.findall(r'\d', string)
+        print(str2)
+        num = int(str2[0])
+        result = Student_Info.objects.order_by('-insert_time')[:num]
+    # -- 최근 매칭 이력 추가 40번 반복 예정 (1, 2에 실데이터 들어감)
+    # Insert Into [TB_HIST_MATCH] Values(1, 2, getdate())
+    # https://codechacha.com/ko/python-extract-integers-from-string/
+    elif(str == "Insert Into [TB_HIST_MATCH] Values(1, 2, getdate())"):
+        str2 = re.findall(r'\d', string)
+        print(str2)
+        num1 = int(str2[0])
+        num2 = int(str2[1])
+        date = datetime.datetime.now()
+
+        result = {
+            "stu_num1"    : num1,
+            "stu_num2"    : num2,
+            "insert_time" : date,
+        }
+
+        # post data form Frontend
+        serializer = mySerializer(data=result)
+        if serializer.is_valid():
+            serializer.save()
+        else:
+            return "save failed"
+
+    return result
