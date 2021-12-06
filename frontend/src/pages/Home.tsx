@@ -1,6 +1,7 @@
 import InputColNum from "../components/InputColNum";
-import "bootstrap/dist/css/bootstrap.min.css";
 import {useNavigate} from "react-router-dom"
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./style/Home.css"
 
 
 type HomeProps = {
@@ -16,8 +17,9 @@ function Home({onChange}:HomeProps) {
     };
 
     return (
-        <div style={{minHeight: "550px", width: "100%", display:"table"}}>
-            <div style={{width: "100%", display: "table-cell", verticalAlign: "middle"}}>
+        <div className="container">
+            <p className="title">SET</p>
+            <div className="content">
                 <InputColNum onSubmit={handleSubmit} />
             </div>
         </div>

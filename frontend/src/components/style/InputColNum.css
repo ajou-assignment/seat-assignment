@@ -1,59 +1,106 @@
-.input-wrapper {
+p {
+    font-size: 17px;
+    font-weight: 600;
+}
+
+form {
+    width: 100%;
+}
+
+.wrapper {
     width: 100%;
     display: flex;
     justify-content: center;
 }
 
-.box {
-    padding: 20px;
-    border-radius: 10px;
-    border: 1px solid grey;
-    width: 30%;
-    box-shadow: 0 10px 20px 3px rgba(50, 50, 93, 0.25);
+.input-wrapper {
+    width: 40%;
+    display: flex;
+    justify-content: center;
 }
 
-.box-subject {
+.col-box {
+    width: 100%;
+}
+
+.col-box__subject p {
+    font-size: 40px;
     text-align: center;
 }
 
-.box-main {
-    width: 100%;
-    display: table;
-    padding-top: 10px;
+.col-box__main {
+    display: flex;
+    justify-content: space-around;
 }
 
-.box-main__input-wrapper {
+.col-box__main--btn,
+.col-box__main--number {
     display: table-cell;
     vertical-align: middle;
-    width: 80%;
     padding-left: 10px;
+    padding-right: 10px;
 }
 
-.box-main__input {
+.col-box__main--btn button {
+    border-radius: 50px;
+}
+
+.col-box__main--number p {
+    font-size: 70px;
+    color: #24252a;
+}
+
+.option-box {
+    padding-top: 20px;
+}
+
+.option-box div {
+    display: table;
+}
+
+.option-box__gen-div,
+.option-box__sd-min {
     width: 100%;
-    padding: 5px;
-    padding-right: 20px;
-    text-align: end;
-}
-
-.box-main__btn-wrapper {
     display: table-cell;
-    width: 20%;
+    vertical-align: middle;
 }
 
-.box-main__btn {
+.option-box__gen-div div,
+.option-box__sd-min div {
     width: 100%;
+    height: 100%;
+    margin: 0;
     display: flex;
-    justify-content: center;
-    padding: 1px;
+    justify-content: space-around;
+}
+
+.option-box__options input {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #bcbcbc;
+    border-radius: 10px;
+    cursor: default;
+}
+
+.option-box__options p {
+    width: 70%;
+    text-align: center;
 }
 
 .box-submit {
+    width: 100%;
     display: flex;
-    justify-content: start;
+    justify-content: right;
 }
 
 .box-submit__btn {
-    padding: 5px;
-    width: 30%;
+    width: 15%;
+    padding-top: 15px;
+    padding-right: 50px;
+}
+
+.box-submit__btn button {
+    font-size: 22px;
+    border-radius: 25px;
 }

@@ -29,62 +29,63 @@ function InputColNum({ onSubmit }:InputColNumProps) {
         onSubmit(number);
     };
 
-    const handleReset = async () => {
-        await setNumber(MIN_NUMBER);
-    };
-
     return (
         <form>
-            <div className="input-wrapper">
-                <div className="box">
-                    <div className="box-subject">
-                        <h3>How many lines do you want?</h3>
-                    </div>
-                    <div className="box-main">
-                        <div className="box-main__input-wrapper">
-                            <input
-                                className="box-main__input"
-                                value={number}
-                                readOnly
-                            />
-                        </div>
-                        <div className="box-main__btn-wrapper">
-                            <div className="box-main__btn">
-                                <Button variant="dark" onClick={clickUpButton}>
-                                    △
-                                </Button>
+            <div className="wrapper">
+                <div className="input-wrapper">
+                    <div>
+                        <div className="col-box">
+                            <div className="col-box__subject">
+                                <p>라인 설정</p>
                             </div>
-                            <div className="box-main__btn">
-                                <Button
-                                    variant="dark"
-                                    onClick={clickDownButton}
-                                >
-                                    ▽
-                                </Button>
+                            <div className="col-box__main">
+                                <div className="test">
+                                    <div className="col-box__main--btn">
+                                        <Button variant="primary" onClick={clickDownButton}>
+                                            ◁
+                                        </Button>
+                                    </div>
+                                    <div className="col-box__main--number">
+                                        <p>{number}</p>
+                                    </div>
+                                    <div className="col-box__main--btn">
+                                        <Button
+                                            variant="primary"
+                                            onClick={clickUpButton}
+                                        >
+                                            ▷
+                                        </Button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="option-box">
+                            <div className="option-box__gen-div">
+                                <div className="option-box__options">
+                                    <input type="checkbox"/>
+                                    <p>남녀 구분</p>
+                                </div>
+                            </div>
+                            <div className="option-box__sd-min">
+                                <div className="option-box__options">
+                                    <input type="checkbox"/>
+                                    <p>표준편차 최소화</p>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div className="box-submit">
-                        <div className="box-submit__btn">
-                            <Button
-                                className="w-100"
-                                variant="success"
-                                type="submit"
-                                onClick={handleSubmit}
-                            >
-                                Submit
-                            </Button>
-                        </div>
-                        <div className="box-submit__btn">
-                            <Button
-                                className="w-100"
-                                variant="warning"
-                                onClick={handleReset}
-                            >
-                                Reset
-                            </Button>
-                        </div>
-                    </div>
+                </div>
+            </div>
+            <div className="box-submit">
+                <div className="box-submit__btn">
+                    <Button
+                        className="w-100"
+                        variant="success"
+                        type="submit"
+                        onClick={handleSubmit}
+                    >
+                        Next
+                    </Button>
                 </div>
             </div>
         </form>
