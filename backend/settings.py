@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'api',
     'rest_framework',  # rest api 사용을 위한 설정
     'corsheaders',  # CORS 관련 세팅
+    'django_extensions',
 ]
 
 MIDDLEWARE = [

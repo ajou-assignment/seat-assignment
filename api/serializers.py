@@ -1,7 +1,7 @@
 from rest_framework import serializers
-from .models import UserSet
+from .models import *
 
-class TestSerializer(serializers.ModelSerializer):
+class mySerializer(serializers.ModelSerializer):
     class Meta:
-        model = UserSet
+        model = Hist_Match
         fields = '__all__'

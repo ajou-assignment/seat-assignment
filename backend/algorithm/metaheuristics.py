@@ -334,6 +334,7 @@ listBestValueSum = []
 
 import time
 start = time.time()  # 시작 시간 저장
+
 for i in range(0,1000):
     listSeatDataAll, initial_value, best_value = getSeatData()
     listInitValueSum.append(initial_value)

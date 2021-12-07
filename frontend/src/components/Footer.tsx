@@ -2,7 +2,7 @@ function Footer() {
     return (
         <div
             style={{
-                height: "200px",
+                height: "170px",
                 display: "flex",
                 justifyContent: "space-around",
                 backgroundColor: "#222222",
