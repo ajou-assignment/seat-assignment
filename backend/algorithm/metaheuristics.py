@@ -1,24 +1,40 @@
 import numpy as np
 import random
 
+from numpy.core.records import array
+
 class Search:
     def __init__(self, values):
         self.values = values
-        self.tabu_length = 10   # Tabu List 길이
-        self.tabu_list = []
         self.max_iter = 1000    # 최대 반복 횟수
-        self.swap_count = 20    # 최초 Swap 자식 해 수
-        self.shake_count = 0   # 최초 Shake 자식해 수
-        self.improve_check_count = 50  # 횟수동안 개선 없으면 종료
+        self.swap_count = 10    # 최초 Swap 자식 해 수
+        self.shake_count = 10   # 최초 Shake 자식해 수
+        self.improve_check_count = 100  # 횟수동안 개선 없으면 종료
         self.total_count = self.swap_count + self.shake_count
-    
-    # 전체 합계 계산
+        self.EvalMethod = "Sum"
+
+    # 적합도 계산 (목적 함수)
     def _fitness(self, solution):
+        val = 0
+        if self.EvalMethod == "Sum":
+            val = self._fitness_Sum(solution)
+        if self.EvalMethod == "Std":
+            val = self._fitness_Std(solution)
+        return val
+    
+    def _fitness_Sum(self, solution):
         sum = 0
         for i in range(0, len(values), 2):
             sum += self.values[solution[i], solution[i + 1]]
             sum += self.values[solution[i + 1], solution[i]]
         return sum
+
+    def _fitness_Std(self, solution):   # 수정 필요
+        arr = np.array([])
+        for i in range(0, len(values), 2):
+            arr = np.append(arr, self.values[solution[i], solution[i + 1]])
+            arr = np.append(arr, self.values[solution[i + 1], solution[i]])
+        return np.std(arr)
     
     def _two_swap(self, solution):
         new_solution = solution.copy()
@@ -34,6 +50,25 @@ class Search:
                 break
                 
         return new_solution, (i, j)
+
+    def _multi_swap(self, solution):
+        new_solution = solution.copy()
+        swap_count = int(len(new_solution) * 0.3) # 이 갯수 이하의 요소가 섞임
+        listSwapIndex = []
+        listSwapValue = []
+
+        while len(listSwapIndex) < swap_count:
+            point = np.random.choice(range(0, len(new_solution)-1))
+            if point not in listSwapIndex:
+                listSwapIndex.append(point)
+                listSwapValue.append(new_solution[point])
+
+        listSwapIndex.sort()
+
+        for idx, value in zip(listSwapIndex, listSwapValue) :
+            new_solution[idx] = value
+
+        return new_solution
 
     def _section_shake(self, solution):
         new_solution = solution.copy()
@@ -70,14 +105,15 @@ class Search:
 
     def _get_neighbors(self, solution):
         candidate_list = []
-        tabu_list = []
+        # tabu_list = []
 
         n = 0
         while n < self.swap_count:
-            candidate, tabu = self._two_swap(solution)
+            candidate = self._multi_swap(solution)
+            # candidate, tabu = self._two_swap(solution)
             if candidate not in candidate_list:
                 candidate_list.append(candidate)
-                tabu_list.append(tabu)
+                # tabu_list.append(tabu)
                 n += 1
 
         n = 0
@@ -86,10 +122,11 @@ class Search:
             if candidate not in candidate_list:
                 candidate_list.append(candidate)
                 n += 1
-                
-        return candidate_list, tabu_list
+
+        return candidate_list      
+        # return candidate_list, tabu_list
     
-    def _eval_aspiration(self, candidate_list, tabu_list):
+    def _eval_Candidate(self, candidate_list):
 
         solution = ""
         fitness_list = []
@@ -100,49 +137,17 @@ class Search:
             
         current_solution = candidate_list[0]
         current_value = fitness_list[0]
-
-        # Remove candidate
-        list_del = []
-        for i in range(0, len(tabu_list)):
-            value = fitness_list[i]
-            if tabu_list[i] in tabu_list:
-                if value > self.aspiration_level:
-                    pass
-                else:
-                    list_del.append(i)
-        list_del.reverse()
-        for i in list_del:
-            del candidate_list[i]
-            del tabu_list[i]
-            del fitness_list[i]
-
-        # 전부 Tabu로 삭제된 경우
-        if len(candidate_list) == 0:    
-            return current_solution, current_value, solution
-
-        # Evalute each candidate
-        current_solution = candidate_list[0]
-        current_value = fitness_list[0]
-        for candidate, tabu, value in zip(candidate_list[:len(tabu_list)], tabu_list, fitness_list[0:len(tabu_list)]):
-            if value > current_value:
+        for candidate, value in zip(candidate_list[:self.swap_count], fitness_list[0:self.swap_count]):
+            if self.CheckImprove(value, current_value):
                 current_value = value
                 current_solution = candidate
-                current_tabu = tabu
                 solution = "swap"
         
-        for candidate, value in zip(candidate_list[len(tabu_list):], fitness_list[len(tabu_list):]):
-            if value > current_value:
+        for candidate, value in zip(candidate_list[self.swap_count:], fitness_list[self.swap_count:]):
+            if self.CheckImprove(value, current_value):
                 current_value = value
                 current_solution = candidate
                 solution = "shake"
-
-        if solution == "swap":
-            # Update tabu list
-            if len(self.tabu_list) < self.tabu_length:
-                self.tabu_list.append(current_tabu)
-            else:
-                self.tabu_list.pop(0)
-                self.tabu_list.append(current_tabu)
         
         return current_solution, current_value, solution
 
@@ -158,8 +163,8 @@ class Search:
         self.aspiration_level = initial_value
         
         # Initialize best value
-        best_value = -np.inf
-        best_solution = None
+        best_solution = current_solution
+        best_value = current_value
 
         # Same Value Count
         count_same_value = 0
@@ -167,21 +172,15 @@ class Search:
         count_loop = 0
         while count_loop < self.max_iter:
             # Generate candidates
-            candidate_list, tabu_list = self._get_neighbors(current_solution)
+            candidate_list = self._get_neighbors(current_solution)
             
             # Evaluating tabu and aspiration
-            current_solution, current_value, solution = self._eval_aspiration(candidate_list, tabu_list)
+            current_solution, current_value, solution = self._eval_Candidate(candidate_list)
 
-            if current_value <= best_value:
-                count_same_value += 1
-            else:
+            if self.CheckImprove(current_value, best_value):
                 count_same_value = 0
-            
-            if current_value > best_value:
                 best_value = current_value
                 best_solution = current_solution
-                if best_value > self.aspiration_level:
-                    self.aspiration_level = best_value
                 if (solution == "swap") & (self.swap_count < self.total_count):
                     self.swap_count += 1
                     self.shake_count -= 1
@@ -190,6 +189,8 @@ class Search:
                     self.swap_count -= 1
                     self.shake_count += 1
                     # print(f"{count_loop} : {self.swap_count} / {self.shake_count}")
+            else:
+                count_same_value += 1
             
             count_loop += 1
 
@@ -201,19 +202,23 @@ class Search:
         #     print('[' + studends[best_solution[i]] + ', ' + studends[best_solution[i + 1]] + ']', end=' ')
 
         # print(self.getSeatData(best_solution))
-        print(f"init : {initial_value}")
-        print(f"{count_loop} :  {best_value}")
+        # print(f"init : {initial_value}")
+        # print(f"{count_loop} :  {best_value}")
 
-        return best_solution
+        return best_solution, initial_value, best_value
 
-    # def getStudentData(self):
+    def CheckImprove(self, current_value, best_value) :
+        if ((self.EvalMethod == "Sum") & (current_value > best_value)) | ((self.EvalMethod == "Std") & (current_value < best_value)):
+            return True
+        else :
+            return False
 
-    #     return 1
+
 
 
 def getSeatData():
     search = Search(values)
-    best_solution = search.solve()
+    best_solution, initial_value, best_value = search.solve()
     listSeatDataAll = []
     for i in range(0,len(best_solution), 2):
         listSeatData = {
@@ -227,7 +232,8 @@ def getSeatData():
             "rating":values[best_solution[i + 1]][best_solution[i]]}
         }
         listSeatDataAll.append(listSeatData)
-    return listSeatDataAll
+    # return listSeatDataAll
+    return listSeatDataAll, initial_value, best_value
 
 
 # values = np.random.randint(0, 100, size=(24, 24))
@@ -323,10 +329,17 @@ values = np.array([
 #         [48, 41, 81,  7, 50, 24,  7,  7, -np.inf, 96],
 #         [15, 73, 60, 82, 79, 18, 54,  3, 54, -np.inf]])
 
+listInitValueSum = []
+listBestValueSum = []
+
 import time
 start = time.time()  # 시작 시간 저장
-# for i in range(0,10):
-#     search = Search(values, 10, 1000)
-#     search.solve()
-print(getSeatData())
+for i in range(0,1000):
+    listSeatDataAll, initial_value, best_value = getSeatData()
+    listInitValueSum.append(initial_value)
+    listBestValueSum.append(best_value)
+# print(getSeatData())
+print(listInitValueSum)
+print(listBestValueSum)
 print("time :", time.time() - start)  # 현재시각 - 시작시간 = 실행 시간
+
