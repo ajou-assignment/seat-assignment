@@ -47,6 +47,8 @@ function ClassView({ data }:ClassViewProps){
             route = baseRoute + "?gen-div=true"
         } else if (data.stdDev === true) {
             route = baseRoute + "?std-dev=true"
+        } else {
+            route = baseRoute
         }
         console.log(route)
 
