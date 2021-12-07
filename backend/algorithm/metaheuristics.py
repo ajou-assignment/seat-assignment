@@ -1,17 +1,19 @@
+from sys import api_version
 import numpy as np
 import random
-
 from numpy.core.records import array
 
 class Search:
-    def __init__(self, values):
-        self.values = values
+    def __init__(self, listStudentData, option):
+        self.listStudentData = listStudentData
+        # self.values = values
         self.max_iter = 1000    # 최대 반복 횟수
         self.swap_count = 10    # 최초 Swap 자식 해 수
         self.shake_count = 10   # 최초 Shake 자식해 수
         self.improve_check_count = 100  # 횟수동안 개선 없으면 종료
         self.total_count = self.swap_count + self.shake_count
         self.EvalMethod = "Sum"
+        self.option = option
 
     # 적합도 계산 (목적 함수)
     def _fitness(self, solution):
@@ -24,16 +26,22 @@ class Search:
     
     def _fitness_Sum(self, solution):
         sum = 0
-        for i in range(0, len(values), 2):
-            sum += self.values[solution[i], solution[i + 1]]
-            sum += self.values[solution[i + 1], solution[i]]
+        for i in range(0, len(solution), 2):
+            sum += self.listStudentData[str(solution[i])]["rating"][str(solution[i + 1])]
+            sum += self.listStudentData[str(solution[i + 1])]["rating"][str(solution[i])]
+        # for i in range(0, len(values), 2):
+        #     sum += self.values[solution[i], solution[i + 1]]
+        #     sum += self.values[solution[i + 1], solution[i]]
         return sum
 
     def _fitness_Std(self, solution):   # 수정 필요
         arr = np.array([])
-        for i in range(0, len(values), 2):
-            arr = np.append(arr, self.values[solution[i], solution[i + 1]])
-            arr = np.append(arr, self.values[solution[i + 1], solution[i]])
+        for i in range(0, len(solution), 2):
+            arr = np.append(arr, self.listStudentData[str(solution[i])]["rating"][str(solution[i + 1])])
+            arr = np.append(arr, self.listStudentData[str(solution[i + 1])]["rating"][str(solution[i])])
+        # for i in range(0, len(values), 2):
+        #     arr = np.append(arr, self.values[solution[i], solution[i + 1]])
+        #     arr = np.append(arr, self.values[solution[i + 1], solution[i]])
         return np.std(arr)
     
     def _two_swap(self, solution):
@@ -127,40 +135,82 @@ class Search:
         # return candidate_list, tabu_list
     
     def _eval_Candidate(self, candidate_list):
-
         solution = ""
         fitness_list = []
+        cnt_SolutionType = self.swap_count
         
+        candidate_list, cnt_SolutionType = self.CheckConstraing(candidate_list, cnt_SolutionType)
+
         for candidate in candidate_list:
             value = self._fitness(candidate)
             fitness_list.append(value)
             
+        if len(candidate_list) == 0:
+            if self.EvalMethod == "Sum":
+                return [], -np.inf, solution
+            else:
+                return [], np.inf, solution
+            
+        
         current_solution = candidate_list[0]
         current_value = fitness_list[0]
-        for candidate, value in zip(candidate_list[:self.swap_count], fitness_list[0:self.swap_count]):
+        for candidate, value in zip(candidate_list[:cnt_SolutionType], fitness_list[0:cnt_SolutionType]):
             if self.CheckImprove(value, current_value):
                 current_value = value
                 current_solution = candidate
                 solution = "swap"
         
-        for candidate, value in zip(candidate_list[self.swap_count:], fitness_list[self.swap_count:]):
+        for candidate, value in zip(candidate_list[cnt_SolutionType:], fitness_list[cnt_SolutionType:]):
             if self.CheckImprove(value, current_value):
                 current_value = value
                 current_solution = candidate
                 solution = "shake"
+        # for candidate, value in zip(candidate_list[:self.swap_count], fitness_list[0:self.swap_count]):
+        #     if self.CheckImprove(value, current_value):
+        #         current_value = value
+        #         current_solution = candidate
+        #         solution = "swap"
+        
+        # for candidate, value in zip(candidate_list[self.swap_count:], fitness_list[self.swap_count:]):
+        #     if self.CheckImprove(value, current_value):
+        #         current_value = value
+        #         current_solution = candidate
+        #         solution = "shake"
         
         return current_solution, current_value, solution
 
+    def CheckConstraing(self, candidate_list, cnt_SolutionType):
+        if(self.option == "gender"):
+            for candidate in range(len(candidate_list) - 1, -1, -1) :
+                for i in range(0, len(candidate_list[candidate]), 2):
+                    if self.listStudentData[str(candidate_list[candidate][i])]["gender"] == self.listStudentData[str(candidate_list[candidate][i + 1])]["gender"]:
+                        if candidate < cnt_SolutionType:
+                            cnt_SolutionType = cnt_SolutionType - 1
+                        candidate_list.remove(candidate_list[candidate])
+                        break
+
+        if(self.option == "recent"):
+            for candidate in range(len(candidate_list) - 1, -1, -1) :
+                for i in range(0, len(candidate_list[candidate]), 2):
+                    if (candidate_list[candidate][i + 1] in self.listStudentData[str(candidate_list[candidate][i])]["recent"]) | (candidate_list[candidate][i] in self.listStudentData[str(candidate_list[candidate][i + 1])]["recent"]):
+                        if candidate < cnt_SolutionType:
+                            cnt_SolutionType = cnt_SolutionType - 1
+                        candidate_list.remove(candidate_list[candidate])
+                        break
+        return candidate_list, cnt_SolutionType
+
+
     def solve(self):
         # Initial solution
-        initial_solution = list(np.random.permutation(range(0, len(self.values))))
+        initial_solution = self.SetInitSolution()
+
+        # initial_solution = list(np.random.permutation(range(0, len(self.listStudentData))))
         initial_value = self._fitness(initial_solution)
         
         # print(f"초기해 : {initial_value} / {initial_solution}")
 
         current_solution = initial_solution
         current_value = initial_value
-        self.aspiration_level = initial_value
         
         # Initialize best value
         best_solution = current_solution
@@ -172,7 +222,8 @@ class Search:
         count_loop = 0
         while count_loop < self.max_iter:
             # Generate candidates
-            candidate_list = self._get_neighbors(current_solution)
+            # candidate_list = self._get_neighbors(current_solution)
+            candidate_list = self._get_neighbors(best_solution)
             
             # Evaluating tabu and aspiration
             current_solution, current_value, solution = self._eval_Candidate(candidate_list)
@@ -213,28 +264,75 @@ class Search:
         else :
             return False
 
+    def SetInitSolution(self):
+        initial_solution = []
+        for key, value in self.listStudentData.items():
+            initial_solution.append(value['num'])
+        random.shuffle(initial_solution)
+        return initial_solution
 
 
 
-def getSeatData():
-    search = Search(values)
+
+def getSeatData(option):
+
+    # table_Student = dbSelect('Select * from [api_student_info]')
+    # table_Rating = dbSelect('Select * from [api_satisfaction_point]')
+    # table_Recent = dbSelect('Select TOP(100) * from [api_hist_match] Order by [id] desc ')
+
+    listStudentData = getStudentDate(table_Student, table_Rating, table_Recent)
+    search = Search(listStudentData, option)
     best_solution, initial_value, best_value = search.solve()
     listSeatDataAll = []
     for i in range(0,len(best_solution), 2):
         listSeatData = {
-        "student1":{
-            "id":best_solution[i] + 1, 
-            "name":studends[best_solution[i]], 
-            "rating":values[best_solution[i]][best_solution[i + 1]]},
+            "student1":{
+            "id":best_solution[i], 
+            "name":listStudentData[str(best_solution[i])]["name"], 
+            "gender":listStudentData[str(best_solution[i])]["gender"], 
+            "rating":listStudentData[str(best_solution[i])]["rating"][str(best_solution[i + 1])]},
         "student2":{
-            "id":best_solution[i + 1] + 1, 
-            "name":studends[best_solution[i + 1]], 
-            "rating":values[best_solution[i + 1]][best_solution[i]]}
+            "id":best_solution[i + 1],
+            "name":listStudentData[str(best_solution[i + 1])]["name"], 
+            "gender":listStudentData[str(best_solution[i + 1])]["gender"], 
+            "rating":listStudentData[str(best_solution[i + 1])]["rating"][str(best_solution[i])]
+            }
         }
+        # "student1":{
+        #     "id":best_solution[i] + 1, 
+        #     "name":studends[best_solution[i]], 
+        #     "rating":values[best_solution[i]][best_solution[i + 1]]},
+        # "student2":{
+        #     "id":best_solution[i + 1] + 1, 
+        #     "name":studends[best_solution[i + 1]], 
+        #     "rating":values[best_solution[i + 1]][best_solution[i]]}
+        # }
         listSeatDataAll.append(listSeatData)
-    # return listSeatDataAll
-    return listSeatDataAll, initial_value, best_value
+        # dbSelect('Insert Into [api_hist_match] Values(' + str(best_solution[i]) + ', ' + str(best_solution[i + 1]) + ')')
+        print('Insert Into [api_hist_match] Values(' + str(best_solution[i]) + ', ' + str(best_solution[i + 1]) + ')')
+    return listSeatDataAll
+    # return listSeatDataAll, initial_value, best_value
 
+def getStudentDate(table_Student, table_Rating, table_Recent):
+    listStudentData = {}
+    for student in table_Student:
+        data = {
+           "num" : student["stu_num"],
+           "name" : student["stu_name"],
+           "gender" : student["stu_gender"],
+           "rating" : {},
+           "recent" : []
+        }
+        listStudentData[str(student["stu_num"])] = data
+
+    for rating in table_Rating :
+        listStudentData[str(rating["stu_num_from"])]["rating"][str(rating["stu_num_to"])] = rating["point"]
+
+    for recent in table_Recent :
+        listStudentData[str(recent["stu_num1"])]["recent"].append(recent["stu_num2"])
+        listStudentData[str(recent["stu_num2"])]["recent"].append(recent["stu_num1"])
+
+    return listStudentData
 
 # values = np.random.randint(0, 100, size=(24, 24))
 # for i in range(0,24):
@@ -288,35 +386,35 @@ def getSeatData():
 # [5,86,71,9,62,6,21,32,34,6,40,48,93,29,98,3,13,96,57,70,89,24,45,77,66,22,75,63,52,91,42,73,91,49,15,88,0,51,0,29,],
 # [61,13,91,80,6,34,12,3,53,65,86,79,6,83,32,34,94,34,25,9,77,8,29,22,85,37,78,61,63,21,30,6,6,7,56,7,25,64,51,-np.inf,]])
 
-studends = np.array(['심인용', '이경민', '홍성빈', '정재민', '정보경', '서재은', '구동용', '강지혜', '노유정', '박봄', '박수정', '박윤우', '박주현', '배기운',
-                     '서경수', '서동찬', '성원기', '원준연', '이창훈', '정명언', '박찬우', '장동찬', '김민주', '김영찬'])
+# studends = np.array(['심인용', '이경민', '홍성빈', '정재민', '정보경', '서재은', '구동용', '강지혜', '노유정', '박봄', '박수정', '박윤우', '박주현', '배기운',
+#                      '서경수', '서동찬', '성원기', '원준연', '이창훈', '정명언', '박찬우', '장동찬', '김민주', '김영찬'])
 
-values = np.array([
-[-np.inf,48,74,7,93,40,78,81,27,49,75,73,38,35,80,21,24,31,11,65,89,44,60,83,],
-[52,-np.inf,70,76,48,80,25,92,13,21,31,43,81,28,32,17,39,82,18,84,64,17,95,53,],
-[46,45,-np.inf,67,66,57,40,63,40,1,53,36,38,58,78,11,76,89,33,30,3,38,52,29,],
-[39,39,57,-np.inf,85,40,87,84,70,16,16,14,21,97,59,96,99,29,47,36,83,31,27,68,],
-[46,23,37,73,-np.inf,48,5,65,34,55,5,38,69,12,48,76,56,90,80,80,20,12,21,62,],
-[7,89,52,79,24,-np.inf,73,95,64,45,24,51,53,1,69,56,14,51,79,37,88,81,90,37,],
-[20,71,53,72,70,24,-np.inf,2,26,76,28,75,40,37,54,98,51,25,17,92,90,10,29,22,],
-[4,24,96,93,32,3,39,-np.inf,68,46,35,94,48,85,23,49,15,35,21,55,18,5,11,65,],
-[1,1,80,11,44,13,86,90,-np.inf,59,5,99,83,53,99,3,72,77,27,52,19,29,84,4,],
-[72,85,51,12,88,15,51,25,9,-np.inf,4,55,63,86,88,73,26,11,53,90,44,47,48,75,],
-[53,36,75,63,41,21,75,78,77,79,-np.inf,15,13,87,52,0,93,99,59,76,54,44,0,59,],
-[31,25,70,70,67,33,4,61,91,24,54,-np.inf,8,0,29,85,6,76,47,41,52,85,65,17,],
-[92,88,86,10,82,36,83,95,38,94,29,55,-np.inf,92,99,87,67,57,20,13,68,44,74,41,],
-[4,99,5,83,18,51,58,86,72,77,15,34,32,-np.inf,76,61,92,38,97,93,88,58,58,40,],
-[64,37,3,51,50,52,81,80,36,47,54,97,78,85,-np.inf,7,18,25,75,11,74,40,13,84,],
-[92,80,11,87,35,36,95,33,47,53,47,73,74,54,20,-np.inf,35,87,9,77,46,8,15,20,],
-[22,14,22,25,62,65,1,29,58,79,11,80,83,9,97,65,-np.inf,58,81,0,78,42,57,77,],
-[36,0,17,70,68,99,54,84,11,71,78,41,39,38,94,14,88,-np.inf,38,75,19,93,95,43,],
-[18,57,76,2,16,39,55,8,48,82,79,45,33,31,20,31,5,66,-np.inf,88,23,30,67,80,],
-[50,71,35,77,85,93,12,98,22,77,10,24,91,18,38,27,48,94,68,-np.inf,30,14,89,65,],
-[93,56,41,11,33,33,12,12,12,79,33,46,82,61,58,44,88,57,96,59,-np.inf,27,57,65,],
-[50,57,18,35,72,84,53,79,16,99,98,70,89,27,50,96,21,27,16,24,59,-np.inf,1,4,],
-[90,30,1,89,44,62,77,41,64,76,28,19,16,69,39,52,31,91,58,37,32,68,-np.inf,78,],
-[68,43,89,63,91,49,63,3,24,25,85,85,56,18,63,81,19,48,71,53,94,59,10,-np.inf,],
-])
+# values = np.array([
+# [-np.inf,48,74,7,93,40,78,81,27,49,75,73,38,35,80,21,24,31,11,65,89,44,60,83,],
+# [52,-np.inf,70,76,48,80,25,92,13,21,31,43,81,28,32,17,39,82,18,84,64,17,95,53,],
+# [46,45,-np.inf,67,66,57,40,63,40,1,53,36,38,58,78,11,76,89,33,30,3,38,52,29,],
+# [39,39,57,-np.inf,85,40,87,84,70,16,16,14,21,97,59,96,99,29,47,36,83,31,27,68,],
+# [46,23,37,73,-np.inf,48,5,65,34,55,5,38,69,12,48,76,56,90,80,80,20,12,21,62,],
+# [7,89,52,79,24,-np.inf,73,95,64,45,24,51,53,1,69,56,14,51,79,37,88,81,90,37,],
+# [20,71,53,72,70,24,-np.inf,2,26,76,28,75,40,37,54,98,51,25,17,92,90,10,29,22,],
+# [4,24,96,93,32,3,39,-np.inf,68,46,35,94,48,85,23,49,15,35,21,55,18,5,11,65,],
+# [1,1,80,11,44,13,86,90,-np.inf,59,5,99,83,53,99,3,72,77,27,52,19,29,84,4,],
+# [72,85,51,12,88,15,51,25,9,-np.inf,4,55,63,86,88,73,26,11,53,90,44,47,48,75,],
+# [53,36,75,63,41,21,75,78,77,79,-np.inf,15,13,87,52,0,93,99,59,76,54,44,0,59,],
+# [31,25,70,70,67,33,4,61,91,24,54,-np.inf,8,0,29,85,6,76,47,41,52,85,65,17,],
+# [92,88,86,10,82,36,83,95,38,94,29,55,-np.inf,92,99,87,67,57,20,13,68,44,74,41,],
+# [4,99,5,83,18,51,58,86,72,77,15,34,32,-np.inf,76,61,92,38,97,93,88,58,58,40,],
+# [64,37,3,51,50,52,81,80,36,47,54,97,78,85,-np.inf,7,18,25,75,11,74,40,13,84,],
+# [92,80,11,87,35,36,95,33,47,53,47,73,74,54,20,-np.inf,35,87,9,77,46,8,15,20,],
+# [22,14,22,25,62,65,1,29,58,79,11,80,83,9,97,65,-np.inf,58,81,0,78,42,57,77,],
+# [36,0,17,70,68,99,54,84,11,71,78,41,39,38,94,14,88,-np.inf,38,75,19,93,95,43,],
+# [18,57,76,2,16,39,55,8,48,82,79,45,33,31,20,31,5,66,-np.inf,88,23,30,67,80,],
+# [50,71,35,77,85,93,12,98,22,77,10,24,91,18,38,27,48,94,68,-np.inf,30,14,89,65,],
+# [93,56,41,11,33,33,12,12,12,79,33,46,82,61,58,44,88,57,96,59,-np.inf,27,57,65,],
+# [50,57,18,35,72,84,53,79,16,99,98,70,89,27,50,96,21,27,16,24,59,-np.inf,1,4,],
+# [90,30,1,89,44,62,77,41,64,76,28,19,16,69,39,52,31,91,58,37,32,68,-np.inf,78,],
+# [68,43,89,63,91,49,63,3,24,25,85,85,56,18,63,81,19,48,71,53,94,59,10,-np.inf,],
+# ])
 
 # values = np.array([[-np.inf, 73, 20, 27, 94,  7,  7, 51, 92, 21],
 #         [28, -np.inf, 57, 31, 80, 69, 11, 10, 28, 39],
@@ -329,18 +427,160 @@ values = np.array([
 #         [48, 41, 81,  7, 50, 24,  7,  7, -np.inf, 96],
 #         [15, 73, 60, 82, 79, 18, 54,  3, 54, -np.inf]])
 
-listInitValueSum = []
-listBestValueSum = []
+# listInitValueSum = []
+# listBestValueSum = []
 
-import time
-start = time.time()  # 시작 시간 저장
+# import time
+# start = time.time()  # 시작 시간 저장
 
-for i in range(0,1000):
-    listSeatDataAll, initial_value, best_value = getSeatData()
-    listInitValueSum.append(initial_value)
-    listBestValueSum.append(best_value)
+# for i in range(0,1000):
+#     listSeatDataAll, initial_value, best_value = getSeatData()
+#     listInitValueSum.append(initial_value)
+#     listBestValueSum.append(best_value)
 # print(getSeatData())
-print(listInitValueSum)
-print(listBestValueSum)
-print("time :", time.time() - start)  # 현재시각 - 시작시간 = 실행 시간
+# print(listInitValueSum)
+# print(listBestValueSum)
+# print("time :", time.time() - start)  # 현재시각 - 시작시간 = 실행 시간
 
+# print(dbSelect('Select * from [TB_STUDENT_INFO]'))
+
+# tmp = ''
+# with open('backend\\algorithm\\최종_발표용_데이터.csv', 'r', newline='') as f:
+#     tmp = csv.reader(f)
+#     print(tmp)
+#     for line in tmp:
+#         print(line[0])
+# print(tmp)
+
+table_Student = [
+        {"id": 1, "stu_num": 1, "stu_name": "아이유", "stu_gender" : "여"},
+        {"id": 2, "stu_num": 2, "stu_name": "아린", "stu_gender" : "여"},
+        {"id": 3, "stu_num": 3, "stu_name": "윈터", "stu_gender" : "여"},
+        {"id": 4, "stu_num": 4, "stu_name": "지수", "stu_gender" : "여"},
+        {"id": 5, "stu_num": 5, "stu_name": "태연", "stu_gender" : "여"},
+        {"id": 6, "stu_num": 6, "stu_name": "카리나", "stu_gender" : "남"},
+        {"id": 7, "stu_num": 7, "stu_name": "사나", "stu_gender" : "남"},
+        {"id": 8, "stu_num": 8, "stu_name": "김민주", "stu_gender" : "남"},
+        {"id": 9, "stu_num": 9, "stu_name": "김채원", "stu_gender" : "남"},
+        {"id": 10, "stu_num": 10, "stu_name": "수지", "stu_gender" : "남"}
+        ]
+
+table_Rating = [
+        {"id": 1, "stu_num_from": 1, "stu_num_to": 1, "point" : 40},
+        {"id": 2, "stu_num_from": 1, "stu_num_to": 2, "point" : 14},
+        {"id": 3, "stu_num_from": 1, "stu_num_to": 3, "point" : 87},
+        {"id": 4, "stu_num_from": 1, "stu_num_to": 4, "point" : 41},
+        {"id": 5, "stu_num_from": 1, "stu_num_to": 5, "point" : 50},
+        {"id": 6, "stu_num_from": 1, "stu_num_to": 6, "point" : 95},
+        {"id": 7, "stu_num_from": 1, "stu_num_to": 7, "point" : 97},
+        {"id": 8, "stu_num_from": 1, "stu_num_to": 8, "point" : 87},
+        {"id": 9, "stu_num_from": 1, "stu_num_to": 9, "point" : 42},
+        {"id": 10, "stu_num_from": 1, "stu_num_to": 10, "point" : 90},
+        {"id": 11, "stu_num_from": 2, "stu_num_to": 1, "point" : 100},
+        {"id": 12, "stu_num_from": 2, "stu_num_to": 2, "point" : 69},
+        {"id": 13, "stu_num_from": 2, "stu_num_to": 3, "point" : 29},
+        {"id": 14, "stu_num_from": 2, "stu_num_to": 4, "point" : 40},
+        {"id": 15, "stu_num_from": 2, "stu_num_to": 5, "point" : 80},
+        {"id": 16, "stu_num_from": 2, "stu_num_to": 6, "point" : 34},
+        {"id": 17, "stu_num_from": 2, "stu_num_to": 7, "point" : 30},
+        {"id": 18, "stu_num_from": 2, "stu_num_to": 8, "point" : 74},
+        {"id": 19, "stu_num_from": 2, "stu_num_to": 9, "point" : 6},
+        {"id": 20, "stu_num_from": 2, "stu_num_to": 10, "point" : 78},
+        {"id": 21, "stu_num_from": 3, "stu_num_to": 1, "point" : 29},
+        {"id": 22, "stu_num_from": 3, "stu_num_to": 2, "point" : 9},
+        {"id": 23, "stu_num_from": 3, "stu_num_to": 3, "point" : 79},
+        {"id": 24, "stu_num_from": 3, "stu_num_to": 4, "point" : 50},
+        {"id": 25, "stu_num_from": 3, "stu_num_to": 5, "point" : 13},
+        {"id": 26, "stu_num_from": 3, "stu_num_to": 6, "point" : 76},
+        {"id": 27, "stu_num_from": 3, "stu_num_to": 7, "point" : 70},
+        {"id": 28, "stu_num_from": 3, "stu_num_to": 8, "point" : 69},
+        {"id": 29, "stu_num_from": 3, "stu_num_to": 9, "point" : 35},
+        {"id": 30, "stu_num_from": 3, "stu_num_to": 10, "point" : 62},
+        {"id": 31, "stu_num_from": 4, "stu_num_to": 1, "point" : 8},
+        {"id": 32, "stu_num_from": 4, "stu_num_to": 2, "point" : 31},
+        {"id": 33, "stu_num_from": 4, "stu_num_to": 3, "point" : 80},
+        {"id": 34, "stu_num_from": 4, "stu_num_to": 4, "point" : 86},
+        {"id": 35, "stu_num_from": 4, "stu_num_to": 5, "point" : 68},
+        {"id": 36, "stu_num_from": 4, "stu_num_to": 6, "point" : 22},
+        {"id": 37, "stu_num_from": 4, "stu_num_to": 7, "point" : 68},
+        {"id": 38, "stu_num_from": 4, "stu_num_to": 8, "point" : 87},
+        {"id": 39, "stu_num_from": 4, "stu_num_to": 9, "point" : 16},
+        {"id": 40, "stu_num_from": 4, "stu_num_to": 10, "point" : 34},
+        {"id": 41, "stu_num_from": 5, "stu_num_to": 1, "point" : 61},
+        {"id": 42, "stu_num_from": 5, "stu_num_to": 2, "point" : 57},
+        {"id": 43, "stu_num_from": 5, "stu_num_to": 3, "point" : 44},
+        {"id": 44, "stu_num_from": 5, "stu_num_to": 4, "point" : 0},
+        {"id": 45, "stu_num_from": 5, "stu_num_to": 5, "point" : 7},
+        {"id": 46, "stu_num_from": 5, "stu_num_to": 6, "point" : 82},
+        {"id": 47, "stu_num_from": 5, "stu_num_to": 7, "point" : 58},
+        {"id": 48, "stu_num_from": 5, "stu_num_to": 8, "point" : 53},
+        {"id": 49, "stu_num_from": 5, "stu_num_to": 9, "point" : 93},
+        {"id": 50, "stu_num_from": 5, "stu_num_to": 10, "point" : 86},
+        {"id": 51, "stu_num_from": 6, "stu_num_to": 1, "point" : 99},
+        {"id": 52, "stu_num_from": 6, "stu_num_to": 2, "point" : 85},
+        {"id": 53, "stu_num_from": 6, "stu_num_to": 3, "point" : 6},
+        {"id": 54, "stu_num_from": 6, "stu_num_to": 4, "point" : 76},
+        {"id": 55, "stu_num_from": 6, "stu_num_to": 5, "point" : 16},
+        {"id": 56, "stu_num_from": 6, "stu_num_to": 6, "point" : 2},
+        {"id": 57, "stu_num_from": 6, "stu_num_to": 7, "point" : 70},
+        {"id": 58, "stu_num_from": 6, "stu_num_to": 8, "point" : 93},
+        {"id": 59, "stu_num_from": 6, "stu_num_to": 9, "point" : 26},
+        {"id": 60, "stu_num_from": 6, "stu_num_to": 10, "point" : 27},
+        {"id": 61, "stu_num_from": 7, "stu_num_to": 1, "point" : 100},
+        {"id": 62, "stu_num_from": 7, "stu_num_to": 2, "point" : 59},
+        {"id": 63, "stu_num_from": 7, "stu_num_to": 3, "point" : 62},
+        {"id": 64, "stu_num_from": 7, "stu_num_to": 4, "point" : 57},
+        {"id": 65, "stu_num_from": 7, "stu_num_to": 5, "point" : 57},
+        {"id": 66, "stu_num_from": 7, "stu_num_to": 6, "point" : 0},
+        {"id": 67, "stu_num_from": 7, "stu_num_to": 7, "point" : 25},
+        {"id": 68, "stu_num_from": 7, "stu_num_to": 8, "point" : 22},
+        {"id": 69, "stu_num_from": 7, "stu_num_to": 9, "point" : 20},
+        {"id": 70, "stu_num_from": 7, "stu_num_to": 10, "point" : 9},
+        {"id": 71, "stu_num_from": 8, "stu_num_to": 1, "point" : 98},
+        {"id": 72, "stu_num_from": 8, "stu_num_to": 2, "point" : 82},
+        {"id": 73, "stu_num_from": 8, "stu_num_to": 3, "point" : 24},
+        {"id": 74, "stu_num_from": 8, "stu_num_to": 4, "point" : 72},
+        {"id": 75, "stu_num_from": 8, "stu_num_to": 5, "point" : 62},
+        {"id": 76, "stu_num_from": 8, "stu_num_to": 6, "point" : 39},
+        {"id": 77, "stu_num_from": 8, "stu_num_to": 7, "point" : 95},
+        {"id": 78, "stu_num_from": 8, "stu_num_to": 8, "point" : 60},
+        {"id": 79, "stu_num_from": 8, "stu_num_to": 9, "point" : 66},
+        {"id": 80, "stu_num_from": 8, "stu_num_to": 10, "point" : 97},
+        {"id": 81, "stu_num_from": 9, "stu_num_to": 1, "point" : 47},
+        {"id": 82, "stu_num_from": 9, "stu_num_to": 2, "point" : 37},
+        {"id": 83, "stu_num_from": 9, "stu_num_to": 3, "point" : 1},
+        {"id": 84, "stu_num_from": 9, "stu_num_to": 4, "point" : 37},
+        {"id": 85, "stu_num_from": 9, "stu_num_to": 5, "point" : 96},
+        {"id": 86, "stu_num_from": 9, "stu_num_to": 6, "point" : 86},
+        {"id": 87, "stu_num_from": 9, "stu_num_to": 7, "point" : 59},
+        {"id": 88, "stu_num_from": 9, "stu_num_to": 8, "point" : 88},
+        {"id": 89, "stu_num_from": 9, "stu_num_to": 9, "point" : 37},
+        {"id": 90, "stu_num_from": 9, "stu_num_to": 10, "point" : 57},
+        {"id": 91, "stu_num_from": 10, "stu_num_to": 1, "point" : 21},
+        {"id": 92, "stu_num_from": 10, "stu_num_to": 2, "point" : 13},
+        {"id": 93, "stu_num_from": 10, "stu_num_to": 3, "point" : 75},
+        {"id": 94, "stu_num_from": 10, "stu_num_to": 4, "point" : 50},
+        {"id": 95, "stu_num_from": 10, "stu_num_to": 5, "point" : 85},
+        {"id": 96, "stu_num_from": 10, "stu_num_to": 6, "point" : 57},
+        {"id": 97, "stu_num_from": 10, "stu_num_to": 7, "point" : 89},
+        {"id": 98, "stu_num_from": 10, "stu_num_to": 8, "point" : 83},
+        {"id": 99, "stu_num_from": 10, "stu_num_to": 9, "point" : 23},
+        {"id": 100, "stu_num_from": 10, "stu_num_to": 10, "point" : 42}
+        ]
+        
+table_Recent = [
+        {"id": 6, "stu_num1": 1, "stu_num2": 7},
+        {"id": 5, "stu_num1": 1, "stu_num2": 6},
+        {"id": 4, "stu_num1": 1, "stu_num2": 5},
+        {"id": 3, "stu_num1": 2, "stu_num2": 4},
+        {"id": 2, "stu_num1": 1, "stu_num2": 3},
+        {"id": 1, "stu_num1": 1, "stu_num2": 2}
+        ]
+
+# table_Student = []
+# table_Rating = []
+# table_Recent = []
+
+# print(getSeatData(""))
+# print(getSeatData("gender"))
+print(getSeatData("recent"))
