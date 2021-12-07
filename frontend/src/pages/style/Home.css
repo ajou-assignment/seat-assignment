@@ -1,7 +1,9 @@
 .container {
     min-height: 550px;
-    width: 80%;
     margin-bottom: 50px;
+    padding-left: 5px;
+    padding-right: 5px;
+    box-sizing: content-box;
     border: 22px solid #292929;
     border-radius: 50px;
     box-shadow: 0px 0px 15px 15px rgba(50, 50, 93, 0.25);

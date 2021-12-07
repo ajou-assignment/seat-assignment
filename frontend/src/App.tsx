@@ -5,12 +5,24 @@ import Home from "./pages/Home";
 import ClassView from "./pages/ClassView"
 import "./App.css"
 
+
+
+interface Data {
+    colnum : number;
+    genDiv : boolean;
+    stdDev : boolean;
+}
+
 function App() {
-    const [colNum, setColNum] = useState<number>(0)
+    const [data, setData] = useState<Data>({
+        colnum: 0,
+        genDiv: false,
+        stdDev: false
+    })
     const baseRoute = "/seat-assignment"
 
-    const handleChange = (e:number) => {
-        setColNum(e)
+    const handleChange = (e:Data) => {
+        setData(e)
     }
 
     return (
@@ -18,7 +30,7 @@ function App() {
             <div className="app-container">
                 <Routes>
                     <Route path={`${baseRoute}/`} element={<Home onChange={handleChange}/>} />
-                    <Route path={`${baseRoute}/classview`} element={<ClassView col={colNum}/>} />
+                    <Route path={`${baseRoute}/classview`} element={<ClassView data={data}/>} />
                 </Routes>
                 <Footer />
             </div>

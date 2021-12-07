@@ -8,11 +8,19 @@ import Header from "../components/Header";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./style/ClassView.css"
 
-type ClassViewProps = {
-    col:number
+
+
+interface Data {
+    colnum : number;
+    genDiv : boolean;
+    stdDev : boolean;
 }
 
-function ClassView({ col }:ClassViewProps){
+type ClassViewProps = {
+    data:Data
+}
+
+function ClassView({ data }:ClassViewProps){
     const [studentsData, setStudentsData] = useState<Array<Array<object>>>([]);
     const [isFetching, setIsFetching] = useState<boolean>(true);
 
@@ -29,10 +37,21 @@ function ClassView({ col }:ClassViewProps){
         return response;
     };
 
-    const handleStudentsData = async (e:number) => {
+    const handleStudentsData = async () => {
         setIsFetching(true);
-        if (col > 0) {
-            const response = await getStudentsData("/students-data");
+        
+        const baseRoute = "/students-data"
+        let route:string = ""
+        
+        if (data.genDiv === true) {
+            route = baseRoute + "?gen-div=true"
+        } else if (data.stdDev === true) {
+            route = baseRoute + "?std-dev=true"
+        }
+        console.log(route)
+
+        if (data.colnum > 0) {
+            const response = await getStudentsData(route);
             setStudentsData(response);
             
         } else {
@@ -47,12 +66,12 @@ function ClassView({ col }:ClassViewProps){
     };
 
     useEffect(()=>{
-        handleStudentsData(col)
+        handleStudentsData()
     }, [])
 
     return(
         <div className="container">
-            <p className="title">Class</p>
+            <p className="title">CLASS</p>
             <div className="content">
                 <div style={{width:"100%"}}>
                     <Header />
@@ -66,7 +85,7 @@ function ClassView({ col }:ClassViewProps){
                                 </div>
                             ) : (
                             <div>
-                                <StudentsArr studentsData={[...studentsData]} columnNumber={col} />
+                                <StudentsArr studentsData={[...studentsData]} columnNumber={data.colnum} />
                                 <ReturnBtn onSubmit={handleReturnBtnSubmit} />
                             </div>)
                         }
