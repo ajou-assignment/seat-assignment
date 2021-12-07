@@ -3,30 +3,72 @@ import { Button } from "react-bootstrap";
 import "./style/InputColNum.css";
 
 
-type InputColNumProps = {
-    onSubmit: (col:number) => void;
+
+interface Data {
+    colnum : number;
+    genDiv : boolean;
+    stdDev : boolean;
 }
+
+type InputColNumProps = {
+    onSubmit: (data:Data) => void;
+}
+
 
 function InputColNum({ onSubmit }:InputColNumProps) {
     const MAX_NUMBER = 5;
     const MIN_NUMBER = 1;
-    const [number, setNumber] = useState<number>(MIN_NUMBER);
+    //const [number, setNumber] = useState<number>(MIN_NUMBER);
+    const [data, setData] = useState<Data>({
+        colnum : 1,
+        genDiv : false,
+        stdDev : false
+    })
 
-    const clickUpButton = async () => {
-        if (number < MAX_NUMBER) {
-            await setNumber(number + 1);
-        }
+    const clickUpButton = () => {
+        if (data.colnum < MAX_NUMBER) {
+            setData(
+                {
+                    ...data,
+                    colnum : data.colnum + 1
+                });
+        };
     };
 
-    const clickDownButton = async () => {
-        if (number > MIN_NUMBER) {
-            await setNumber(number - 1);
-        }
+    const clickDownButton = () => {
+        if (data.colnum > MIN_NUMBER) {
+            setData(
+                {
+                    ...data,
+                    colnum : data.colnum - 1
+                });
+        };
+    };
+
+    const handleCheck = (e:React.ChangeEvent<HTMLInputElement>) => {
+        const { name, checked } = e.target
+        let other:string = ""
+
+        if (name === "genDiv") other = "stdDev";    
+        else if (name === "stdDev") other = "genDiv"
+
+        if (checked === true) {
+            setData({
+                ...data,
+                [name] : checked,
+                [other] : false
+            });
+        } else if (checked === false) {
+            setData({
+                ...data,
+                [name] : checked,
+            });
+        };
     };
 
     const handleSubmit = (e:React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        onSubmit(number);
+        onSubmit(data);
     };
 
     return (
@@ -46,13 +88,10 @@ function InputColNum({ onSubmit }:InputColNumProps) {
                                         </Button>
                                     </div>
                                     <div className="col-box__main--number">
-                                        <p>{number}</p>
+                                        <p>{data.colnum}</p>
                                     </div>
                                     <div className="col-box__main--btn">
-                                        <Button
-                                            variant="primary"
-                                            onClick={clickUpButton}
-                                        >
+                                        <Button variant="primary" onClick={clickUpButton}>
                                             ▷
                                         </Button>
                                     </div>
@@ -62,13 +101,13 @@ function InputColNum({ onSubmit }:InputColNumProps) {
                         <div className="option-box">
                             <div className="option-box__gen-div">
                                 <div className="option-box__options">
-                                    <input type="checkbox"/>
+                                    <input type="checkbox" name="genDiv" checked={data.genDiv} onChange={handleCheck}/>
                                     <p>남녀 구분</p>
                                 </div>
                             </div>
                             <div className="option-box__sd-min">
                                 <div className="option-box__options">
-                                    <input type="checkbox"/>
+                                    <input type="checkbox" name="stdDev" checked={data.stdDev} onChange={handleCheck}/>
                                     <p>표준편차 최소화</p>
                                 </div>
                             </div>

@@ -4,14 +4,21 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./style/Home.css"
 
 
+
+interface Data {
+    colnum : number;
+    genDiv : boolean;
+    stdDev : boolean;
+}
+
 type HomeProps = {
-    onChange:(col:number)=>void
+    onChange:(data:Data)=>void
 }
 
 function Home({onChange}:HomeProps) {
     const navigate = useNavigate();
 
-    const handleSubmit = async (e:number) => {
+    const handleSubmit = async (e:Data) => {
         onChange(e);
         navigate("/seat-assignment/classview")
     };
