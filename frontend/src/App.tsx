@@ -9,15 +9,15 @@ import "./App.css"
 
 interface Data {
     colnum : number;
-    genDiv : boolean;
     stdDev : boolean;
+    noAgain: boolean;
 }
 
 function App() {
     const [data, setData] = useState<Data>({
-        colnum: 0,
-        genDiv: false,
-        stdDev: false
+        colnum: 3,
+        stdDev: false,
+        noAgain: false,
     })
     const baseRoute = "/seat-assignment"
 

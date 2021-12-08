@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router";
+import MainContents from "../components/MainContents"; 
 import StudentsArr from "../components/StudentsArr";
 import ReturnBtn from "../components/ReturnBtn";
 import dummyData from "../dummyData";
@@ -12,8 +13,8 @@ import "./style/ClassView.css"
 
 interface Data {
     colnum : number;
-    genDiv : boolean;
     stdDev : boolean;
+    noAgain: boolean;
 }
 
 type ClassViewProps = {
@@ -43,10 +44,10 @@ function ClassView({ data }:ClassViewProps){
         const baseRoute = "/students-data"
         let route:string = ""
         
-        if (data.genDiv === true) {
-            route = baseRoute + "?gen-div=true"
-        } else if (data.stdDev === true) {
+        if (data.stdDev === true) {
             route = baseRoute + "?std-dev=true"
+        } else if (data.noAgain === true) {
+            route = baseRoute + "?no-again=true"
         } else {
             route = baseRoute
         }
@@ -72,9 +73,7 @@ function ClassView({ data }:ClassViewProps){
     }, [])
 
     return(
-        <div className="container">
-            <p className="title">CLASS</p>
-            <div className="content">
+        <MainContents title="CLASS">
                 <div style={{width:"100%"}}>
                     <Header />
                     <div style={{minHeight: "550px"}}>
@@ -93,8 +92,7 @@ function ClassView({ data }:ClassViewProps){
                         }
                     </div>
                 </div>
-            </div>
-        </div>
+        </MainContents>
     );
 }
 
