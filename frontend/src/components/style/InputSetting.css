@@ -58,7 +58,6 @@ form {
     display: table;
 }
 
-.option-box__gen-div,
 .option-box__sd-min,
 .option-box__no-again {
     width: 100%;
@@ -66,7 +65,6 @@ form {
     vertical-align: middle;
 }
 
-.option-box__gen-div div,
 .option-box__sd-min div,
 .option-box__no-again div {
     width: 100%;

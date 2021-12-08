@@ -6,7 +6,6 @@ import "./style/InputSetting.css";
 
 interface Data {
     colnum : number;
-    genDiv : boolean;
     stdDev : boolean;
     noAgain: boolean;
 }
@@ -19,10 +18,9 @@ type InputColNumProps = {
 function InputColNum({ onSubmit }:InputColNumProps) {
     const MAX_NUMBER = 5;
     const MIN_NUMBER = 1;
-    //const [number, setNumber] = useState<number>(MIN_NUMBER);
+
     const [data, setData] = useState<Data>({
-        colnum : 1,
-        genDiv : false,
+        colnum : 3,
         stdDev : false,
         noAgain: false,
     })
@@ -49,7 +47,7 @@ function InputColNum({ onSubmit }:InputColNumProps) {
 
     const handleCheck = (e:React.ChangeEvent<HTMLInputElement>) => {
         const { name, checked } = e.target
-        let options:Array<string> = ["genDiv", "stdDev", "noAgain"]
+        let options:Array<string> = ["stdDev", "noAgain"]
         const optionIndex = options.indexOf(name)
 
         if (optionIndex > -1) options.splice(optionIndex, 1)
@@ -59,7 +57,6 @@ function InputColNum({ onSubmit }:InputColNumProps) {
                 ...data,
                 [name] : checked,
                 [options[0]] : false,
-                [options[1]] : false,
             });
         } else if (checked === false) {
             setData({
@@ -103,12 +100,6 @@ function InputColNum({ onSubmit }:InputColNumProps) {
                             </div>
                         </div>
                         <div className="option-box">
-                            <div className="option-box__gen-div">
-                                <div className="option-box__options">
-                                    <input type="checkbox" name="genDiv" checked={data.genDiv} onChange={handleCheck}/>
-                                    <p>남녀 구분</p>
-                                </div>
-                            </div>
                             <div className="option-box__sd-min">
                                 <div className="option-box__options">
                                     <input type="checkbox" name="stdDev" checked={data.stdDev} onChange={handleCheck}/>

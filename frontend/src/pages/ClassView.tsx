@@ -13,7 +13,6 @@ import "./style/ClassView.css"
 
 interface Data {
     colnum : number;
-    genDiv : boolean;
     stdDev : boolean;
     noAgain: boolean;
 }
@@ -45,9 +44,7 @@ function ClassView({ data }:ClassViewProps){
         const baseRoute = "/students-data"
         let route:string = ""
         
-        if (data.genDiv === true) {
-            route = baseRoute + "?gen-div=true"
-        } else if (data.stdDev === true) {
+        if (data.stdDev === true) {
             route = baseRoute + "?std-dev=true"
         } else if (data.noAgain === true) {
             route = baseRoute + "?no-again=true"

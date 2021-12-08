@@ -8,7 +8,6 @@ import "./style/Home.css"
 
 interface Data {
     colnum : number;
-    genDiv : boolean;
     stdDev : boolean;
     noAgain: boolean;
 }
