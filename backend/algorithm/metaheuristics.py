@@ -2,6 +2,7 @@ from sys import api_version
 import numpy as np
 import random
 from numpy.core.records import array
+from api.dbSelect import *
 
 table_Student = []
 table_Rating = []
@@ -163,7 +164,10 @@ class Search:
     def solve(self):
         # Initial solution
         initial_solution = self.SetInitSolution()   # 초기해 생성 (랜덤)
+
         initial_value = self._fitness(initial_solution)
+
+        # print(initial_value)
         
         current_solution = initial_solution
         current_value = initial_value
@@ -200,6 +204,8 @@ class Search:
             if count_same_value == self.improve_check_count:
                 break
 
+        #print(best_value)
+
         return best_solution
 
     def CheckImprove(self, current_value, best_value) : # 최적해 개선 여부 체크
@@ -217,9 +223,12 @@ class Search:
 
 def getSeatData(option):    # API 호출용 함수  
     # Database 데이터를 활용하여 Data 생성
+    # print(option)
     table_Student = dbSelect('Select * from [api_student_info]')
     table_Rating = dbSelect('Select * from [api_satisfaction_point]')
     table_Recent = dbSelect('Select TOP(100) * from [api_hist_match] Order by [id] desc ')
+
+    # print(len(table_Recent))
 
     listStudentData = getStudentData(table_Student, table_Rating, table_Recent)
     search = Search(listStudentData, option)

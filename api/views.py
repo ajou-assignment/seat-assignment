@@ -11,8 +11,6 @@ from .serializers import mySerializer
 from rest_framework import viewsets      
 from .models import *
 import backend.algorithm.metaheuristics as mh
-import string
-import datetime
 
 class MyJSONEncoder(DjangoJSONEncoder):
     def default(self, o):
@@ -75,17 +73,31 @@ def GetTest(request):
 
     return JsonResponse(data, safe=False)
 
+'''
+/students-data?gen-div=true
+/students-data?std-dev=true
+/students-data
+1. 남녀구분
+2. 표준편차 최소화
+3. 노멀
+'''
 
 def AlgoTest(request):
-    data = mh.getSeatData()
+    option = ""
+    if(request.GET.get("no-again")):
+        option = "recent"
+    elif(request.GET.get("std-dev")):
+        option = "std"
+    else:
+        option = ""
+
+    # print(option)
+    data = mh.getSeatData(option)
 
     encoder = MyJSONEncoder
     safe = False
     json_dumps_params = {"ensure_ascii": False}
     kwargs = {}
-
-    print("Asdfasfsaf")
-    print(data)
 
     r = JsonResponse(data, encoder, safe, json_dumps_params, **kwargs)
     r.content.decode("utf8")
@@ -96,61 +108,3 @@ def AlgoTest(request):
     return r
 
 #print(AlgoTest())
-
-'''
-    -- 만족도 기준정보 테이블 조회
-    Select * from [TB_SATSFACTION_POINT]
-
-    -- 학생 정보 테이블 조회
-    Select * from [TB_STUDENT_INFO]
-
-    -- 최근 10회 히스토리 추출
-    Select TOP(400) * from [TB_HIST_MATCH] Order by [INSERT_TIME] desc 
-
-    -- 최근 매칭 이력 추가 40번 반복 예정 (1, 2에 실데이터 들어감)
-    Insert Into [TB_HIST_MATCH] Values(1, 2, getdate())
-'''
-
-def dbSelect(str: string):
-    result = ''
-
-    # -- 만족도 기준정보 테이블 조회
-    # Select * from [TB_SATSFACTION_POINT]
-    if(str == "Select * from [TB_SATSFACTION_POINT]"):
-        result = Satisfaction_Point.objects.all()
-    # -- 학생 정보 테이블 조회
-    # Select * from [TB_STUDENT_INFO]
-    elif(str == "Select * from [TB_STUDENT_INFO]"):
-        result = Student_Info.objects.all()
-    # -- 최근 10회 히스토리 추출
-    # Select TOP(400) * from [TB_HIST_MATCH] Order by [INSERT_TIME] desc 
-    # https://oneone-note.tistory.com/36
-    elif(str == "Select TOP(400) * from [TB_HIST_MATCH] Order by [INSERT_TIME] desc"):
-        str2 = re.findall(r'\d', string)
-        print(str2)
-        num = int(str2[0])
-        result = Student_Info.objects.order_by('-insert_time')[:num]
-    # -- 최근 매칭 이력 추가 40번 반복 예정 (1, 2에 실데이터 들어감)
-    # Insert Into [TB_HIST_MATCH] Values(1, 2, getdate())
-    # https://codechacha.com/ko/python-extract-integers-from-string/
-    elif(str == "Insert Into [TB_HIST_MATCH] Values(1, 2, getdate())"):
-        str2 = re.findall(r'\d', string)
-        print(str2)
-        num1 = int(str2[0])
-        num2 = int(str2[1])
-        date = datetime.datetime.now()
-
-        result = {
-            "stu_num1"    : num1,
-            "stu_num2"    : num2,
-            "insert_time" : date,
-        }
-
-        # post data form Frontend
-        serializer = mySerializer(data=result)
-        if serializer.is_valid():
-            serializer.save()
-        else:
-            return "save failed"
-
-    return result

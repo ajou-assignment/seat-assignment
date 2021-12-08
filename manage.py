@@ -7,6 +7,8 @@ import sys
 def main():
     """Run administrative tasks."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'backend.settings')
+
+    #print(sys.path)
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
@@ -37,9 +39,9 @@ def main():
 
                     os.chdir(project_root)
                     sys.argv.pop(2)
+        else:
+            execute_from_command_line(sys.argv)
     except IndexError:
-        execute_from_command_line(sys.argv)
-    else:
         execute_from_command_line(sys.argv)
 
 
