@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
-import "./style/InputColNum.css";
+import "./style/InputSetting.css";
 
 
 
@@ -8,6 +8,7 @@ interface Data {
     colnum : number;
     genDiv : boolean;
     stdDev : boolean;
+    noAgain: boolean;
 }
 
 type InputColNumProps = {
@@ -22,7 +23,8 @@ function InputColNum({ onSubmit }:InputColNumProps) {
     const [data, setData] = useState<Data>({
         colnum : 1,
         genDiv : false,
-        stdDev : false
+        stdDev : false,
+        noAgain: false,
     })
 
     const clickUpButton = () => {
@@ -47,16 +49,17 @@ function InputColNum({ onSubmit }:InputColNumProps) {
 
     const handleCheck = (e:React.ChangeEvent<HTMLInputElement>) => {
         const { name, checked } = e.target
-        let other:string = ""
+        let options:Array<string> = ["genDiv", "stdDev", "noAgain"]
+        const optionIndex = options.indexOf(name)
 
-        if (name === "genDiv") other = "stdDev";    
-        else if (name === "stdDev") other = "genDiv"
+        if (optionIndex > -1) options.splice(optionIndex, 1)
 
         if (checked === true) {
             setData({
                 ...data,
                 [name] : checked,
-                [other] : false
+                [options[0]] : false,
+                [options[1]] : false,
             });
         } else if (checked === false) {
             setData({
@@ -70,6 +73,7 @@ function InputColNum({ onSubmit }:InputColNumProps) {
         e.preventDefault();
         onSubmit(data);
     };
+
 
     return (
         <form>
@@ -109,6 +113,12 @@ function InputColNum({ onSubmit }:InputColNumProps) {
                                 <div className="option-box__options">
                                     <input type="checkbox" name="stdDev" checked={data.stdDev} onChange={handleCheck}/>
                                     <p>표준편차 최소화</p>
+                                </div>
+                            </div>
+                            <div className="option-box__no-again">
+                                <div className="option-box__options">
+                                    <input type="checkbox" name="noAgain" checked={data.noAgain} onChange={handleCheck}/>
+                                    <p>전 짝꿍 피하기</p>
                                 </div>
                             </div>
                         </div>

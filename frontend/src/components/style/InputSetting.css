@@ -59,14 +59,16 @@ form {
 }
 
 .option-box__gen-div,
-.option-box__sd-min {
+.option-box__sd-min,
+.option-box__no-again {
     width: 100%;
     display: table-cell;
     vertical-align: middle;
 }
 
 .option-box__gen-div div,
-.option-box__sd-min div {
+.option-box__sd-min div,
+.option-box__no-again div {
     width: 100%;
     height: 100%;
     margin: 0;

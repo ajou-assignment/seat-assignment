@@ -9,6 +9,7 @@ body,
     -moz-osx-font-smoothing: grayscale;
     background-color: #222222;
     box-sizing: content-box;
+    width: auto;
 }
 
 code {

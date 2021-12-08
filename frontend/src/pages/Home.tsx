@@ -1,5 +1,6 @@
-import InputColNum from "../components/InputColNum";
 import {useNavigate} from "react-router-dom"
+import InputSetting from "../components/InputSetting";
+import MainContents from "../components/MainContents";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./style/Home.css"
 
@@ -9,6 +10,7 @@ interface Data {
     colnum : number;
     genDiv : boolean;
     stdDev : boolean;
+    noAgain: boolean;
 }
 
 type HomeProps = {
@@ -24,12 +26,9 @@ function Home({onChange}:HomeProps) {
     };
 
     return (
-        <div className="container">
-            <p className="title">SET</p>
-            <div className="content">
-                <InputColNum onSubmit={handleSubmit} />
-            </div>
-        </div>
+        <MainContents title="SET">
+            <InputSetting onSubmit={handleSubmit} />
+        </MainContents>
     );
 }
 
