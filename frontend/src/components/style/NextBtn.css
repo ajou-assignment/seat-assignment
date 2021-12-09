@@ -1,0 +1,16 @@
+.box-submit {
+    width: 100%;
+    display: flex;
+    justify-content: right;
+}
+
+.box-submit__btn {
+    width: 15%;
+    padding-top: 15px;
+    padding-right: 50px;
+}
+
+.box-submit__btn button {
+    font-size: 22px;
+    border-radius: 25px;
+}

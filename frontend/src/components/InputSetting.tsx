@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
+import NextBtn from "./NextBtn";
 import "./style/InputSetting.css";
 
 
@@ -24,6 +25,7 @@ function InputColNum({ onSubmit }:InputColNumProps) {
         stdDev : false,
         noAgain: false,
     })
+    const [filename, setFilename] = useState<string>("첨부 파일")
 
     const clickUpButton = () => {
         if (data.colnum < MAX_NUMBER) {
@@ -44,6 +46,14 @@ function InputColNum({ onSubmit }:InputColNumProps) {
                 });
         };
     };
+
+    const handleChangeFile = (e:React.ChangeEvent<HTMLInputElement>) => {
+        const { value } = e.target
+        let filePath:Array<string> = value.split("\\")
+
+        const inputFilename:string = filePath[filePath.length-1]
+        setFilename(inputFilename)
+    }
 
     const handleCheck = (e:React.ChangeEvent<HTMLInputElement>) => {
         const { name, checked } = e.target
@@ -114,32 +124,21 @@ function InputColNum({ onSubmit }:InputColNumProps) {
                             </div>
                         </div>
                     </div>
-                    <div className="filebox">
-                        <div className="file-box">
-                            <div className="subject">
-                                <p>파일 첨부</p>
+                    <div className="file-box">
+                        <div className="subject">
+                            <p>파일 첨부</p>
+                        </div>
+                        <div className="file-box__main">
+                            <input className="filename" type="text" value={filename} placeholder="첨부 파일" readOnly/>
+                            <div className="label-wrapper">
+                            <label htmlFor="file">파일 찾기</label>
                             </div>
-                            <div className="file-box__main">
-                                <div className="file-box__input">
-                                    <input type="file" placeholder="dd"/>
-                                </div>
-                            </div>
+                            <input className="input-file" id="file" type="file" accept=".xlsx, .csv" required onChange={handleChangeFile}/>
                         </div>
                     </div>
                 </div>
             </div>
-            <div className="box-submit">
-                <div className="box-submit__btn">
-                    <Button
-                        className="w-100"
-                        variant="success"
-                        type="submit"
-                        onClick={handleSubmit}
-                    >
-                        Next
-                    </Button>
-                </div>
-            </div>
+            <NextBtn title="Next" onClick={handleSubmit}/>
         </form>
         
     );

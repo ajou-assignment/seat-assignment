@@ -3,11 +3,11 @@ import { Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router";
 import MainContents from "../components/MainContents"; 
 import StudentsArr from "../components/StudentsArr";
-import ReturnBtn from "../components/ReturnBtn";
 import dummyData from "../dummyData";
 import Header from "../components/Header";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./style/ClassView.css"
+import NextBtn from "../components/NextBtn";
 
 
 
@@ -87,7 +87,7 @@ function ClassView({ data }:ClassViewProps){
                             ) : (
                             <div>
                                 <StudentsArr studentsData={[...studentsData]} columnNumber={data.colnum} />
-                                <ReturnBtn onSubmit={handleReturnBtnSubmit} />
+                                <NextBtn title="Back" onClick={handleReturnBtnSubmit}/>
                             </div>)
                         }
                     </div>
