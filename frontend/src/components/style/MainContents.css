@@ -1,6 +1,5 @@
 .container {
     width: 85%;
-    min-height: 550px;
     margin-bottom: 50px;
     box-sizing: content-box;
     border: 22px solid #292929;
@@ -27,4 +26,5 @@
     width: 100%;
     display: flex;
     justify-content: center;
+    padding-bottom: 30px;
 }

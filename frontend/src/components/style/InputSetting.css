@@ -8,37 +8,49 @@ form {
 }
 
 .wrapper {
-    width: 100%;
     display: flex;
     justify-content: center;
 }
 
 .input-wrapper {
-    width: 40%;
     display: flex;
     justify-content: center;
 }
 
-.col-box {
+.filebox {
+    width: 35%;
+}
+
+.settingbox__wrapper {
+    width: 35%;
+    display: flex;
+    justify-content: center;
+}
+
+.settingbox {
+    width: 50%;
+}
+
+.col-box .file-box {
     width: 100%;
 }
 
-.col-box__subject p {
+.subject p {
     font-size: 40px;
     text-align: center;
 }
 
 .col-box__main {
-    display: flex;
-    justify-content: space-around;
+    width: 100%;
+    display: table;
+    table-layout: fixed;
+    text-align: center;
 }
 
 .col-box__main--btn,
 .col-box__main--number {
     display: table-cell;
     vertical-align: middle;
-    padding-left: 10px;
-    padding-right: 10px;
 }
 
 .col-box__main--btn button {
@@ -46,7 +58,7 @@ form {
 }
 
 .col-box__main--number p {
-    font-size: 70px;
+    font-size: 90px;
     color: #24252a;
 }
 
@@ -54,15 +66,9 @@ form {
     padding-top: 20px;
 }
 
-.option-box div {
-    display: table;
-}
-
 .option-box__sd-min,
 .option-box__no-again {
     width: 100%;
-    display: table-cell;
-    vertical-align: middle;
 }
 
 .option-box__sd-min div,
@@ -75,16 +81,13 @@ form {
 }
 
 .option-box__options input {
-    display: inline-block;
-    width: 20px;
+    width: 20%;
     height: 20px;
-    border: 2px solid #bcbcbc;
-    border-radius: 10px;
     cursor: default;
 }
 
 .option-box__options p {
-    width: 70%;
+    width: 80%;
     text-align: center;
 }
 
@@ -103,4 +106,10 @@ form {
 .box-submit__btn button {
     font-size: 22px;
     border-radius: 25px;
+}
+
+.file-box__main {
+    padding-left: 30px;
+    display: flex;
+    justify-content: center;
 }

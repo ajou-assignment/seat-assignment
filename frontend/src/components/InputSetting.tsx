@@ -76,13 +76,13 @@ function InputColNum({ onSubmit }:InputColNumProps) {
         <form>
             <div className="wrapper">
                 <div className="input-wrapper">
-                    <div>
-                        <div className="col-box">
-                            <div className="col-box__subject">
-                                <p>라인 설정</p>
-                            </div>
-                            <div className="col-box__main">
-                                <div className="test">
+                    <div className="settingbox__wrapper">
+                        <div className="settingbox">
+                            <div className="col-box">
+                                <div className="subject">
+                                    <p>라인 설정</p>
+                                </div>
+                                <div className="col-box__main">
                                     <div className="col-box__main--btn">
                                         <Button variant="primary" onClick={clickDownButton}>
                                             ◁
@@ -98,18 +98,30 @@ function InputColNum({ onSubmit }:InputColNumProps) {
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div className="option-box">
-                            <div className="option-box__sd-min">
-                                <div className="option-box__options">
-                                    <input type="checkbox" name="stdDev" checked={data.stdDev} onChange={handleCheck}/>
-                                    <p>표준편차 최소화</p>
+                            <div className="option-box">
+                                <div className="option-box__sd-min">
+                                    <div className="option-box__options">
+                                        <input type="checkbox" name="stdDev" checked={data.stdDev} onChange={handleCheck}/>
+                                        <p>표준편차 최소화</p>
+                                    </div>
+                                </div>
+                                <div className="option-box__no-again">
+                                    <div className="option-box__options">
+                                        <input type="checkbox" name="noAgain" checked={data.noAgain} onChange={handleCheck}/>
+                                        <p>전 짝꿍 피하기</p>
+                                    </div>
                                 </div>
                             </div>
-                            <div className="option-box__no-again">
-                                <div className="option-box__options">
-                                    <input type="checkbox" name="noAgain" checked={data.noAgain} onChange={handleCheck}/>
-                                    <p>전 짝꿍 피하기</p>
+                        </div>
+                    </div>
+                    <div className="filebox">
+                        <div className="file-box">
+                            <div className="subject">
+                                <p>파일 첨부</p>
+                            </div>
+                            <div className="file-box__main">
+                                <div className="file-box__input">
+                                    <input type="file" placeholder="dd"/>
                                 </div>
                             </div>
                         </div>
