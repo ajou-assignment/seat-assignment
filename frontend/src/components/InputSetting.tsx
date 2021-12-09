@@ -133,14 +133,13 @@ function InputColNum({ onSubmit }:InputColNumProps) {
                             <Button className="label-wrapper" variant="primary">
                                 <label htmlFor="file">파일 찾기</label>
                             </Button>
-                            <input className="input-file" id="file" type="file" accept=".xlsx, .csv" required onChange={handleChangeFile}/>
+                            <input className="input-file" id="file" type="file" accept=".xlsx, .csv" onChange={handleChangeFile} required/>
                         </div>
                     </div>
                 </div>
             </div>
             <NextBtn title="Next" onClick={handleSubmit}/>
         </form>
-        
     );
 }
 

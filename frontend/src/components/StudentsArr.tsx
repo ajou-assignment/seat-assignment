@@ -46,11 +46,11 @@ function StudentsArr({ studentsData, columnNumber }:StudentsArrProps) {
             <div className="satisfaction">
                 <p>
                     초기 만족도{" "}
-                    <span>{satisfaction.init}</span>
+                    <span>{satisfaction.init.toFixed(2)}</span>
                 </p>
                 <p>
                     최적 만족도{" "}
-                    <span>{satisfaction.best}</span>
+                    <span>{satisfaction.best.toFixed(2)}</span>
                 </p>
             </div>
             <SeatTable>

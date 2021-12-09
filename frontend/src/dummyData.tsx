@@ -35,8 +35,8 @@ const dummyData:DummyData = {
             student1: { id: 11, name: "채영창", rating: 33 },
         },
     ],
-    init_value: 1000,
-    best_value: 5000
+    init_value: 10.123456,
+    best_value: 50.123456
 };
 
 export default dummyData;
