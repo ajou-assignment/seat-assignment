@@ -25,7 +25,7 @@ function InputColNum({ onSubmit }:InputColNumProps) {
         stdDev : false,
         noAgain: false,
     })
-    const [filename, setFilename] = useState<string>("첨부 파일")
+    const [filename, setFilename] = useState<string>("파일을 첨부하세요.")
 
     const clickUpButton = () => {
         if (data.colnum < MAX_NUMBER) {
@@ -129,10 +129,10 @@ function InputColNum({ onSubmit }:InputColNumProps) {
                             <p>파일 첨부</p>
                         </div>
                         <div className="file-box__main">
-                            <input className="filename" type="text" value={filename} placeholder="첨부 파일" readOnly/>
-                            <div className="label-wrapper">
-                            <label htmlFor="file">파일 찾기</label>
-                            </div>
+                            <input className="filename" type="text" value={filename} readOnly/>
+                            <Button className="label-wrapper" variant="primary">
+                                <label htmlFor="file">파일 찾기</label>
+                            </Button>
                             <input className="input-file" id="file" type="file" accept=".xlsx, .csv" required onChange={handleChangeFile}/>
                         </div>
                     </div>

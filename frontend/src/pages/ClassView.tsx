@@ -11,6 +11,12 @@ import NextBtn from "../components/NextBtn";
 
 
 
+interface studentsData {
+    stu_list : Array<object>;
+    init_value : number;
+    best_value : number;
+}
+
 interface Data {
     colnum : number;
     stdDev : boolean;
@@ -22,7 +28,11 @@ type ClassViewProps = {
 }
 
 function ClassView({ data }:ClassViewProps){
-    const [studentsData, setStudentsData] = useState<Array<Array<object>>>([]);
+    const [studentsData, setStudentsData] = useState<studentsData>({
+        stu_list: [],
+        init_value: 0,
+        best_value: 0,
+    });
     const [isFetching, setIsFetching] = useState<boolean>(true);
 
     const navigate = useNavigate()
@@ -86,7 +96,7 @@ function ClassView({ data }:ClassViewProps){
                                 </div>
                             ) : (
                             <div>
-                                <StudentsArr studentsData={[...studentsData]} columnNumber={data.colnum} />
+                                <StudentsArr studentsData={{...studentsData}} columnNumber={data.colnum} />
                                 <NextBtn title="Back" onClick={handleReturnBtnSubmit}/>
                             </div>)
                         }
