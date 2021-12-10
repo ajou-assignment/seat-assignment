@@ -87,14 +87,16 @@ def AlgoTest(request):
     if(request.GET.get("no-again")):
         option = "recent"
     elif(request.GET.get("std-dev")):
-        option = "std"
+        option = "Std"
     else:
         option = ""
 
     # print(option)
     data = mh.getSeatData(option)
+    #print(data)
 
     encoder = MyJSONEncoder
+    print(encoder)
     safe = False
     json_dumps_params = {"ensure_ascii": False}
     kwargs = {}

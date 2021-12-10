@@ -78,7 +78,7 @@ def dbSelect(myStr: string):
             "stu_num2"    : num2,
         }
 
-        print(result)
+        #print(result)
 
         # post data form Frontend
         serializer = mySerializer(data=result)

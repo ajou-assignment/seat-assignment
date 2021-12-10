@@ -163,6 +163,7 @@ class Search:
 
     def solve(self):
         # Initial solution
+        print(self.option)
         initial_solution = self.SetInitSolution()   # 초기해 생성 (랜덤)
 
         initial_value = self._fitness(initial_solution)
@@ -206,7 +207,7 @@ class Search:
 
         #print(best_value)
 
-        return best_solution
+        return best_solution, initial_value, best_value
 
     def CheckImprove(self, current_value, best_value) : # 최적해 개선 여부 체크
         if ((self.EvalMethod == "Sum") & (current_value > best_value)) | ((self.EvalMethod == "Std") & (current_value < best_value)):
@@ -232,8 +233,9 @@ def getSeatData(option):    # API 호출용 함수
 
     listStudentData = getStudentData(table_Student, table_Rating, table_Recent)
     search = Search(listStudentData, option)
-    best_solution = search.solve()
-    listSeatDataAll = []
+    best_solution, init_value, best_value = search.solve()
+    listSeatDataAll = {}
+    listSeatDataList = []
     for i in range(0,len(best_solution), 2):    # I/F를 위한 Data Set 생성
         listSeatData = {
             "student1":{
@@ -246,8 +248,13 @@ def getSeatData(option):    # API 호출용 함수
             "rating":listStudentData[str(best_solution[i + 1])]["rating"][str(best_solution[i])]
             }
         }
-        listSeatDataAll.append(listSeatData)
+        listSeatDataList.append(listSeatData)
+        listSeatDataAll["stu_list"] = listSeatDataList
         dbSelect('Insert Into [api_hist_match] Values(' + str(best_solution[i]) + ', ' + str(best_solution[i + 1]) + ')')
+    #listSeatDataAll.append(init_value)
+    listSeatDataAll["init_value"] = init_value
+    #listSeatDataAll.append(best_value)
+    listSeatDataAll["best_value"] = best_value
     return listSeatDataAll
 
 def getStudentData(table_Student, table_Rating, table_Recent):  # Database 데이터를 활용하여 Data 생성
